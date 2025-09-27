@@ -1,79 +1,152 @@
 <!doctype html>
-<button id="stopTurnBtn" class="danger" disabled>Atura torn</button>
-<button id="nextBtn" class="secondary" disabled>Següent</button>
-</div>
+<html lang="ca">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Entrenador de Debat · Oratòria + Rúbrica</title>
+  <meta name="description" content="Pràctica d'oratòria amb temporitzador, micròfon, feedback, puntuació i rúbrica integrada." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">🎙️</span>
+      <h1>Entrenador de Debat · Oratòria</h1>
+      <span class="sub">+ Rúbrica</span>
+    </div>
+    <div class="toggles">
+      <button id="themeToggle" class="ghost" aria-pressed="false" aria-label="Canvia tema (clar/fosc)">🌓</button>
+      <button id="helpBtn" class="ghost" aria-haspopup="dialog" aria-controls="helpDialog">❔</button>
+    </div>
+  </header>
 
+  <main class="container" id="main">
+    <section class="panel card" aria-labelledby="cfgTitle">
+      <h2 id="cfgTitle">Configuració</h2>
+      <form id="configForm" class="grid">
+        <label>
+          Tema de debat
+          <input id="topicInput" type="text" placeholder="Ex.: Deures obligatoris a casa?" required />
+        </label>
+        <label>
+          Rol
+          <select id="roleSelect" required>
+            <option value="pro">A favor</option>
+            <option value="con">En contra</option>
+          </select>
+        </label>
+        <label>
+          Temps per torn (seg.)
+          <input id="timePerTurn" type="number" min="15" max="300" step="5" value="60" required />
+        </label>
+        <label>
+          Rondes
+          <input id="rounds" type="number" min="1" max="6" value="3" required />
+        </label>
+        <div class="row">
+          <button type="submit" class="primary">Començar</button>
+          <button type="button" id="resetBtn" class="secondary">Reinicia</button>
+        </div>
+      </form>
+    </section>
 
-<div class="layout-2cols">
-<div>
-<div class="transcript card soft" aria-live="polite">
-<h3>Transcripció</h3>
-<p id="transcript">(Ací veuràs el que dius si el micro està activat. Pots escriure manualment si ho prefereixes.)</p>
-<textarea id="manualInput" rows="6" placeholder="Escriu ací si no vols usar el micròfon..."></textarea>
-</div>
+    <section class="panel card" aria-labelledby="debateTitle">
+      <div class="bar">
+        <h2 id="debateTitle">Debat en curs</h2>
+        <div class="status">
+          <span id="roundBadge" class="badge" aria-live="polite">Ronda 0/0</span>
+          <span id="timer" class="timer" aria-live="polite">00:00</span>
+          <span id="score" class="score" aria-live="polite" title="Punts">0 ⭐</span>
+          <span id="grade" class="badge" title="Nota /10">Nota: —</span>
+        </div>
+      </div>
 
+      <div class="prompts">
+        <div class="prompt">
+          <h3>Instrucció</h3>
+          <p id="instruction">Configura el debat i prem «Començar».</p>
+        </div>
+        <div class="prompt">
+          <h3>Idea guia</h3>
+          <p id="promptText">—</p>
+          <div class="chips" id="criteriaChips" aria-label="Criteris de valoració"></div>
+        </div>
+      </div>
 
-<div class="feedback card soft">
-<h3>Feedback ràpid</h3>
-<div id="feedback"></div>
-<div class="row">
-<button id="goodBtn" class="success" title="Marcar intervenció bona (sumar punts)">+1</button>
-<button id="badBtn" class="warning" title="Marcar millora (restar punts)">−1</button>
-</div>
-</div>
-</div>
+      <div class="controls">
+        <button id="micBtn" class="circle" aria-pressed="false" aria-label="Activa/desactiva micròfon">🎤</button>
+        <button id="startTurnBtn" class="primary">Inicia torn</button>
+        <button id="stopTurnBtn" class="danger" disabled>Atura torn</button>
+        <button id="nextBtn" class="secondary" disabled>Següent</button>
+      </div>
 
+      <div class="layout-2cols">
+        <div>
+          <div class="transcript card soft" aria-live="polite">
+            <h3>Transcripció</h3>
+            <p id="transcript">(Ací veuràs el que dius si el micro està activat. Pots escriure manualment si ho prefereixes.)</p>
+            <textarea id="manualInput" rows="6" placeholder="Escriu ací si no vols usar el micròfon..."></textarea>
+          </div>
 
-<aside class="rubric card" aria-labelledby="rubricTitle">
-<div class="bar">
-<h3 id="rubricTitle">Rúbrica (0–2 per criteri)</h3>
-<span id="rubricRoundScore" class="badge">Ronda: 0/12</span>
-</div>
-<form id="rubricForm" class="rubric-grid"></form>
-<div class="rubric-notes">
-<label>Comentari docent
-<textarea id="rubricComment" rows="3" placeholder="Punts forts i a millorar..."></textarea>
-</label>
-<div class="row">
-<button type="button" id="presetClarity" class="secondary">+ Claredat</button>
-<button type="button" id="presetEvidence" class="secondary">+ Evidències</button>
-<button type="button" id="presetRefute" class="secondary">+ Refutació</button>
-</div>
-</div>
-</aside>
-</div>
-</section>
+          <div class="feedback card soft">
+            <h3>Feedback ràpid</h3>
+            <div id="feedback"></div>
+            <div class="row">
+              <button id="goodBtn" class="success" title="Marcar intervenció bona (sumar punts)">+1</button>
+              <button id="badBtn" class="warning" title="Marcar millora (restar punts)">−1</button>
+            </div>
+          </div>
+        </div>
 
+        <aside class="rubric card" aria-labelledby="rubricTitle">
+          <div class="bar">
+            <h3 id="rubricTitle">Rúbrica (0–2 per criteri)</h3>
+            <span id="rubricRoundScore" class="badge">Ronda: 0/12</span>
+          </div>
+          <form id="rubricForm" class="rubric-grid"></form>
+          <div class="rubric-notes">
+            <label>Comentari docent
+              <textarea id="rubricComment" rows="3" placeholder="Punts forts i a millorar..."></textarea>
+            </label>
+            <div class="row">
+              <button type="button" id="presetClarity" class="secondary">+ Claredat</button>
+              <button type="button" id="presetEvidence" class="secondary">+ Evidències</button>
+              <button type="button" id="presetRefute" class="secondary">+ Refutació</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
 
-<section class="panel card" aria-labelledby="historyTitle">
-<div class="bar">
-<h2 id="historyTitle">Historial</h2>
-<button id="exportBtn" class="secondary">Exporta (.txt)</button>
-</div>
-<ol id="history" class="history" aria-live="polite"></ol>
-</section>
-</main>
+    <section class="panel card" aria-labelledby="historyTitle">
+      <div class="bar">
+        <h2 id="historyTitle">Historial</h2>
+        <button id="exportBtn" class="secondary">Exporta (.txt)</button>
+      </div>
+      <ol id="history" class="history" aria-live="polite"></ol>
+    </section>
+  </main>
 
+  <dialog id="helpDialog" aria-labelledby="helpTitle">
+    <h3 id="helpTitle">Com funciona?</h3>
+    <ol class="help">
+      <li>Posa un <strong>tema</strong>, tria <strong>rol</strong>, <strong>temps</strong> i <strong>rondes</strong>.</li>
+      <li>Prem <strong>Començar</strong>. En cada ronda, parla i avalua amb la <strong>rúbrica</strong>.</li>
+      <li>Usa <strong>+1</strong> i <strong>−1</strong> per a incidències ràpides i guarda l’<strong>historial</strong>.</li>
+      <li>Prem <strong>Exporta</strong> per descarregar resum + rúbrica i nota final.</li>
+    </ol>
+    <button id="closeHelp" class="primary">Tanca</button>
+  </dialog>
 
-<dialog id="helpDialog" aria-labelledby="helpTitle">
-<h3 id="helpTitle">Com funciona?</h3>
-<ol class="help">
-<li>Posa un <strong>tema</strong>, tria <strong>rol</strong>, <strong>temps</strong> i <strong>rondes</strong>.</li>
-<li>Prem <strong>Començar</strong>. En cada ronda, parla i avalua amb la <strong>rúbrica</strong>.</li>
-<li>Usa <strong>+1</strong> i <strong>−1</strong> per a incidències ràpides i guarda l’<strong>historial</strong>.</li>
-<li>Prem <strong>Exporta</strong> per descarregar resum + rúbrica i nota final.</li>
-</ol>
-<button id="closeHelp" class="primary">Tanca</button>
-</dialog>
+  <footer class="app-footer">
+    <small>Fet amb ❤️ per a pràctiques d’oratòria · Funciona millor en HTTPS · <a href="#" id="clearData">Neteja dades locals</a></small>
+  </footer>
 
-
-<footer class="app-footer">
-<small>Fet amb ❤️ per a pràctiques d’oratòria · Funciona millor en HTTPS · <a href="#" id="clearData">Neteja dades locals</a></small>
-</footer>
-
-
-<script src="app.js" type="module"></script>
+  <script src="app.js" type="module"></script>
 </body>
 </html>
+
 
 
