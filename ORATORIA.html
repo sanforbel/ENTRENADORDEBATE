@@ -1,434 +1,79 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrenador de Debate IA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0c0a18; /* Darker purple background */
-            color: #F9FAFB;
-            background-image: radial-gradient(#2e1a47 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        .main-container {
-            background: rgba(17, 24, 39, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(55, 65, 81, 0.5);
-        }
-        .record-button {
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
-        }
-        .record-button:hover {
-            box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
-        }
-        .record-button.recording {
-            background-color: #EF4444; /* red-500 */
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        #feedbackContainer h3 {
-            font-size: 1.25rem; font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem;
-            color: #818CF8; border-bottom: 1px solid #4B5563; padding-bottom: 0.25rem;
-        }
-        #feedbackContainer ul { list-style-type: none; padding-left: 0; }
-        #feedbackContainer li { position: relative; padding-left: 1.5rem; margin-bottom: 0.5rem; }
-        #feedbackContainer li::before {
-            content: '✓'; position: absolute; left: 0; color: #4ADE80; 
-        }
-        #feedbackContainer strong { color: #F9FAFB; }
-        .roulette-display {
-            transition: transform 0.1s ease-in-out, color 0.1s;
-        }
-        .step-container {
-            border-left: 3px solid #4f46e5;
-            transition: opacity 0.5s, max-height 0.5s;
-            max-height: 0px;
-            opacity: 0;
-            overflow: hidden;
-        }
-        .step-container.active {
-            max-height: 1000px; /* Large enough */
-            opacity: 1;
-        }
-    </style>
-</head>
-<body class="min-h-screen flex items-center justify-center p-4">
-    <div class="main-container w-full max-w-3xl mx-auto rounded-2xl p-6 md:p-8 shadow-2xl">
-        <!-- Encabezado -->
-        <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">
-                Entrenador de Debate IA
-            </h1>
-            <p class="text-gray-400 mt-2">Gira la ruleta, graba tu argumento y refutación, y recibe feedback al instante.</p>
-        </div>
+<!doctype html>
+<button id="stopTurnBtn" class="danger" disabled>Atura torn</button>
+<button id="nextBtn" class="secondary" disabled>Següent</button>
+</div>
 
-        <!-- PASO 1: RULETA DE TEMAS -->
-        <div class="step-container active bg-gray-800/50 p-5 rounded-lg mb-6">
-            <h2 class="text-xl font-bold text-indigo-300 mb-4">Paso 1: Elige tu Moción de Debate</h2>
-            <div id="roulette-container" class="h-24 bg-gray-900 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
-                <p id="roulette-display" class="roulette-display text-2xl font-semibold text-center px-4">¡Gira la ruleta para empezar!</p>
-            </div>
-            <button id="spinButton" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
-                Girar la Ruleta
-            </button>
-        </div>
 
-        <!-- PASO 2: DEBATE -->
-        <div id="debate-section" class="space-y-6">
-            <!-- Argumento a Favor -->
-            <div id="favor-step" class="step-container bg-gray-800/50 p-5 rounded-lg">
-                <h2 class="text-xl font-bold text-green-400 mb-2">Paso 2: Argumenta a Favor (1 min)</h2>
-                <p id="favor-topic" class="text-gray-300 mb-4"></p>
-                <div class="flex flex-col items-center space-y-3">
-                    <button id="recordFavorButton" class="record-button flex items-center justify-center w-32 h-16 bg-green-600 rounded-full text-white font-bold text-lg">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4a3 3 0 016 0v6a3 3 0 11-6 0V4z"/><path fill-rule="evenodd" d="M5.5 8.5A.5.5 0 016 9v1a4 4 0 004 4h.5a.5.5 0 010 1h-.5a5 5 0 01-5-5V9a.5.5 0 01.5-.5zM10 18a5 5 0 005-5V9a.5.5 0 011 0v1a6 6 0 01-6 6a.5.5 0 010-1z" clip-rule="evenodd"/></svg>
-                    </button>
-                    <p id="statusFavor" class="text-gray-400 text-sm h-5">Graba tu argumento</p>
-                    <canvas id="visualizerFavor" class="w-full h-16 rounded-lg bg-gray-900/50 hidden"></canvas>
-                    <textarea id="transcriptionFavor" rows="4" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3" placeholder="Tu transcripción aparecerá aquí..."></textarea>
-                    <button id="evaluateFavorButton" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg disabled:bg-gray-500 disabled:cursor-not-allowed">Evaluar Argumento</button>
-                </div>
-            </div>
-            
-            <!-- Refutación en Contra -->
-            <div id="contra-step" class="step-container bg-gray-800/50 p-5 rounded-lg">
-                <h2 class="text-xl font-bold text-red-400 mb-2">Paso 3: Refuta en Contra (1 min)</h2>
-                <p id="contra-topic" class="text-gray-300 mb-4"></p>
-                <div class="flex flex-col items-center space-y-3">
-                    <button id="recordContraButton" class="record-button flex items-center justify-center w-32 h-16 bg-red-600 rounded-full text-white font-bold text-lg">
-                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4a3 3 0 016 0v6a3 3 0 11-6 0V4z"/><path fill-rule="evenodd" d="M5.5 8.5A.5.5 0 016 9v1a4 4 0 004 4h.5a.5.5 0 010 1h-.5a5 5 0 01-5-5V9a.5.5 0 01.5-.5zM10 18a5 5 0 005-5V9a.5.5 0 011 0v1a6 6 0 01-6 6a.5.5 0 010-1z" clip-rule="evenodd"/></svg>
-                    </button>
-                    <p id="statusContra" class="text-gray-400 text-sm h-5">Graba tu refutación</p>
-                    <canvas id="visualizerContra" class="w-full h-16 rounded-lg bg-gray-900/50 hidden"></canvas>
-                    <textarea id="transcriptionContra" rows="4" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3" placeholder="Tu transcripción aparecerá aquí..."></textarea>
-                    <button id="evaluateContraButton" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg disabled:bg-gray-500 disabled:cursor-not-allowed">Evaluar Refutación</button>
-                </div>
-            </div>
-        </div>
+<div class="layout-2cols">
+<div>
+<div class="transcript card soft" aria-live="polite">
+<h3>Transcripció</h3>
+<p id="transcript">(Ací veuràs el que dius si el micro està activat. Pots escriure manualment si ho prefereixes.)</p>
+<textarea id="manualInput" rows="6" placeholder="Escriu ací si no vols usar el micròfon..."></textarea>
+</div>
 
-        <!-- PASO 3: FEEDBACK -->
-        <div id="feedbackContainer" class="step-container mt-6 bg-gray-800/50 p-5 rounded-lg"></div>
-    </div>
 
-    <script>
-        // --- ELEMENTOS DEL DOM ---
-        const spinButton = document.getElementById('spinButton');
-        const rouletteDisplay = document.getElementById('roulette-display');
-        const debateSection = document.getElementById('debate-section');
-        const favorStep = document.getElementById('favor-step');
-        const contraStep = document.getElementById('contra-step');
-        const feedbackContainer = document.getElementById('feedbackContainer');
+<div class="feedback card soft">
+<h3>Feedback ràpid</h3>
+<div id="feedback"></div>
+<div class="row">
+<button id="goodBtn" class="success" title="Marcar intervenció bona (sumar punts)">+1</button>
+<button id="badBtn" class="warning" title="Marcar millora (restar punts)">−1</button>
+</div>
+</div>
+</div>
 
-        const elements = {
-            favor: {
-                topic: document.getElementById('favor-topic'),
-                recordBtn: document.getElementById('recordFavorButton'),
-                status: document.getElementById('statusFavor'),
-                visualizer: document.getElementById('visualizerFavor'),
-                transcription: document.getElementById('transcriptionFavor'),
-                evaluateBtn: document.getElementById('evaluateFavorButton'),
-                micIcon: document.getElementById('recordFavorButton').querySelector('svg'),
-                postura: 'A Favor'
-            },
-            contra: {
-                topic: document.getElementById('contra-topic'),
-                recordBtn: document.getElementById('recordContraButton'),
-                status: document.getElementById('statusContra'),
-                visualizer: document.getElementById('visualizerContra'),
-                transcription: document.getElementById('transcriptionContra'),
-                evaluateBtn: document.getElementById('evaluateContraButton'),
-                micIcon: document.getElementById('recordContraButton').querySelector('svg'),
-                postura: 'En Contra'
-            }
-        };
 
-        // --- ESTADO DE LA APP ---
-        let debateState = {
-            isRecording: false,
-            currentTopic: '',
-            currentStage: null, // 'favor' or 'contra'
-            mediaRecorder: null,
-            audioContext: null,
-            analyser: null,
-            animationFrameId: null,
-            recognition: null,
-        };
+<aside class="rubric card" aria-labelledby="rubricTitle">
+<div class="bar">
+<h3 id="rubricTitle">Rúbrica (0–2 per criteri)</h3>
+<span id="rubricRoundScore" class="badge">Ronda: 0/12</span>
+</div>
+<form id="rubricForm" class="rubric-grid"></form>
+<div class="rubric-notes">
+<label>Comentari docent
+<textarea id="rubricComment" rows="3" placeholder="Punts forts i a millorar..."></textarea>
+</label>
+<div class="row">
+<button type="button" id="presetClarity" class="secondary">+ Claredat</button>
+<button type="button" id="presetEvidence" class="secondary">+ Evidències</button>
+<button type="button" id="presetRefute" class="secondary">+ Refutació</button>
+</div>
+</div>
+</aside>
+</div>
+</section>
 
-        const topics = [
-            "Las redes sociales son más perjudiciales que beneficiosas para los adolescentes.",
-            "Los videojuegos deberían considerarse un deporte olímpico.",
-            "Debería haber un límite de tiempo diario para el uso del móvil en los institutos.",
-            "La inteligencia artificial reemplazará la mayoría de los trabajos en el futuro.",
-            "Es más importante ser feliz que tener éxito económico.",
-            "El cambio climático es el problema más urgente que enfrenta la humanidad.",
-            "Los deberes escolares deberían ser eliminados.",
-            "La comida rápida debería llevar advertencias sanitarias como el tabaco.",
-            "Los uniformes escolares fomentan la igualdad y reducen el bullying.",
-            "Aprender a programar es más importante que aprender un segundo idioma."
-        ];
 
-        // --- LÓGICA DE LA RULETA ---
-        spinButton.addEventListener('click', () => {
-            let spinCount = 0;
-            const maxSpins = 30; // Total de cambios para la animación
-            const spinInterval = setInterval(() => {
-                const randomIndex = Math.floor(Math.random() * topics.length);
-                rouletteDisplay.textContent = topics[randomIndex];
-                rouletteDisplay.style.transform = `scale(${1 + Math.random() * 0.1})`;
-                spinCount++;
-                if (spinCount >= maxSpins) {
-                    clearInterval(spinInterval);
-                    const finalTopicIndex = Math.floor(Math.random() * topics.length);
-                    debateState.currentTopic = topics[finalTopicIndex];
-                    rouletteDisplay.textContent = debateState.currentTopic;
-                    rouletteDisplay.style.transform = 'scale(1)';
-                    rouletteDisplay.classList.add('text-indigo-300');
-                    spinButton.textContent = "Girar de Nuevo";
-                    startDebate();
-                }
-            }, 100);
-        });
-        
-        function startDebate() {
-            elements.favor.topic.textContent = `Moción: "${debateState.currentTopic}"`;
-            elements.contra.topic.textContent = `Moción: "${debateState.currentTopic}"`;
-            
-            // Resetear estados
-            contraStep.classList.remove('active');
-            feedbackContainer.classList.remove('active');
-            elements.contra.transcription.value = '';
-            elements.favor.transcription.value = '';
-            
-            favorStep.classList.add('active');
-        }
+<section class="panel card" aria-labelledby="historyTitle">
+<div class="bar">
+<h2 id="historyTitle">Historial</h2>
+<button id="exportBtn" class="secondary">Exporta (.txt)</button>
+</div>
+<ol id="history" class="history" aria-live="polite"></ol>
+</section>
+</main>
 
-        // --- LÓGICA DE GRABACIÓN Y TRANSCRIPCIÓN (GENERALIZADA) ---
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-        function setupStage(stage) {
-            const stageElements = elements[stage];
-            
-            if (SpeechRecognition) {
-                const recognition = new SpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = 'es-ES';
+<dialog id="helpDialog" aria-labelledby="helpTitle">
+<h3 id="helpTitle">Com funciona?</h3>
+<ol class="help">
+<li>Posa un <strong>tema</strong>, tria <strong>rol</strong>, <strong>temps</strong> i <strong>rondes</strong>.</li>
+<li>Prem <strong>Començar</strong>. En cada ronda, parla i avalua amb la <strong>rúbrica</strong>.</li>
+<li>Usa <strong>+1</strong> i <strong>−1</strong> per a incidències ràpides i guarda l’<strong>historial</strong>.</li>
+<li>Prem <strong>Exporta</strong> per descarregar resum + rúbrica i nota final.</li>
+</ol>
+<button id="closeHelp" class="primary">Tanca</button>
+</dialog>
 
-                recognition.onresult = (event) => {
-                    let finalTranscript = '';
-                    for (let i = 0; i < event.results.length; ++i) {
-                        finalTranscript += event.results[i][0].transcript;
-                    }
-                    stageElements.transcription.value = finalTranscript;
-                };
-                recognition.onerror = (event) => {
-                    stageElements.status.textContent = `Error: ${event.error}`;
-                    stopRecording();
-                };
-                debateState.recognition = recognition;
-            } else {
-                stageElements.status.textContent = "Reconocimiento de voz no soportado.";
-                stageElements.recordBtn.disabled = true;
-            }
 
-            stageElements.recordBtn.onclick = () => {
-                if (debateState.isRecording) stopRecording();
-                else startRecording(stage);
-            };
-            
-            stageElements.evaluateBtn.onclick = () => evaluate(stage);
-        }
+<footer class="app-footer">
+<small>Fet amb ❤️ per a pràctiques d’oratòria · Funciona millor en HTTPS · <a href="#" id="clearData">Neteja dades locals</a></small>
+</footer>
 
-        async function startRecording(stage) {
-            if (debateState.isRecording) return;
-            debateState.currentStage = stage;
-            const stageElements = elements[stage];
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                debateState.isRecording = true;
-                
-                stageElements.transcription.value = '';
-                feedbackContainer.classList.remove('active');
-                if (debateState.recognition) debateState.recognition.start();
-
-                debateState.mediaRecorder = new MediaRecorder(stream);
-                debateState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                debateState.analyser = debateState.audioContext.createAnalyser();
-                const source = debateState.audioContext.createMediaStreamSource(stream);
-                source.connect(debateState.analyser);
-                debateState.analyser.fftSize = 256;
-                
-                debateState.mediaRecorder.start();
-                
-                stageElements.visualizer.classList.remove('hidden');
-                drawVisualizer();
-
-                stageElements.status.textContent = 'Grabando... (1 min máx)';
-                stageElements.recordBtn.classList.add('recording');
-                stageElements.micIcon.innerHTML = `<path fill-rule="evenodd" d="M5 3a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd"/>`;
-                stageElements.evaluateBtn.disabled = true;
-                
-                // Parar automáticamente después de 1 minuto
-                setTimeout(() => {
-                    if(debateState.isRecording && debateState.currentStage === stage) {
-                        stopRecording();
-                    }
-                }, 60000);
-
-            } catch (err) {
-                stageElements.status.textContent = 'Error de micrófono.';
-            }
-        }
-
-        function stopRecording() {
-            if (!debateState.isRecording) return;
-            const stage = debateState.currentStage;
-            const stageElements = elements[stage];
-
-            if (debateState.recognition) debateState.recognition.stop();
-            if (debateState.mediaRecorder) {
-                debateState.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-                debateState.mediaRecorder.stop();
-            }
-            if (debateState.animationFrameId) cancelAnimationFrame(debateState.animationFrameId);
-            
-            debateState.isRecording = false;
-            
-            stageElements.visualizer.classList.add('hidden');
-            stageElements.status.textContent = 'Grabación finalizada. Evalúa ahora.';
-            stageElements.recordBtn.classList.remove('recording');
-            stageElements.micIcon.innerHTML = `<path d="M7 4a3 3 0 016 0v6a3 3 0 11-6 0V4z"/><path fill-rule="evenodd" d="M5.5 8.5A.5.5 0 016 9v1a4 4 0 004 4h.5a.5.5 0 010 1h-.5a5 5 0 01-5-5V9a.5.5 0 01.5-.5zM10 18a5 5 0 005-5V9a.5.5 0 011 0v1a6 6 0 01-6 6a.5.5 0 010-1z" clip-rule="evenodd"/>`;
-            stageElements.evaluateBtn.disabled = false;
-        }
-
-        function drawVisualizer() {
-            const stageElements = elements[debateState.currentStage];
-            const canvasCtx = stageElements.visualizer.getContext('2d');
-            const bufferLength = debateState.analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            
-            const WIDTH = stageElements.visualizer.width;
-            const HEIGHT = stageElements.visualizer.height;
-
-            const draw = () => {
-                if (!debateState.isRecording) return;
-                debateState.animationFrameId = requestAnimationFrame(draw);
-                debateState.analyser.getByteFrequencyData(dataArray);
-
-                canvasCtx.fillStyle = '#111827';
-                canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-                const barWidth = (WIDTH / bufferLength) * 2.5;
-                let barHeight, x = 0;
-                for (let i = 0; i < bufferLength; i++) {
-                    barHeight = dataArray[i] / 2;
-                    const gradient = canvasCtx.createLinearGradient(0, HEIGHT, 0, HEIGHT - barHeight);
-                    gradient.addColorStop(0, '#818CF8');
-                    gradient.addColorStop(1, '#A78BFA');
-                    canvasCtx.fillStyle = gradient;
-                    canvasCtx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
-                    x += barWidth + 1;
-                }
-            };
-            draw();
-        }
-
-        async function evaluate(stage) {
-            const stageElements = elements[stage];
-            const discurso = stageElements.transcription.value;
-            if (!discurso.trim()) {
-                alert("El discurso está vacío.");
-                return;
-            }
-
-            stageElements.status.textContent = 'Evaluando con Gemini...';
-            stageElements.evaluateBtn.disabled = true;
-            stageElements.evaluateBtn.textContent = 'Analizando...';
-            
-            feedbackContainer.innerHTML = '<div class="text-center text-gray-400">La IA está preparando tu feedback... 🤖</div>';
-            feedbackContainer.classList.add('active');
-
-            try {
-                const feedback = await getGeminiFeedback(discurso, debateState.currentTopic, stageElements.postura);
-                feedbackContainer.innerHTML = markdownToHtml(feedback);
-                
-                if (stage === 'favor') {
-                    favorStep.classList.remove('active');
-                    contraStep.classList.add('active');
-                }
-            } catch (error) {
-                feedbackContainer.innerHTML = `<div class="text-red-400">Error: No se pudo obtener el feedback. Revisa la consola.</div>`;
-            } finally {
-                stageElements.status.textContent = `Evaluación ${stageElements.postura} completada.`;
-                stageElements.evaluateBtn.disabled = false;
-                stageElements.evaluateBtn.textContent = `Evaluar ${stage.charAt(0).toUpperCase() + stage.slice(1)}`;
-            }
-        }
-        
-        async function getGeminiFeedback(textoDiscurso, topic, postura) {
-            const API_KEY = ""; // Inyectada en runtime
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
-            
-            const prompt = `
-            Actúa como un "Entrenador de Oratoria y Debate IA" de élite para estudiantes de secundaria. Tu feedback se basa en una rúbrica de evaluación completa y tu tono es siempre constructivo, motivador y educativo, inspirado en el manual de @debateando.
-
-            El tema de debate es: "${topic}"
-
-            El estudiante acaba de grabar su intervención de un minuto. Esta es la transcripción:
-            ---
-            "${textoDiscurso}"
-            ---
-
-            Tu tarea es analizar esta intervención, que corresponde a la postura **${postura}**. Proporciona un feedback detallado usando obligatoriamente la siguiente estructura en formato Markdown:
-
-            ### 📜 Rúbrica de Evaluación (${postura})
-            * **Argumentación y Evidencia (/10):** (¿Los argumentos son lógicos, relevantes y persuasivos? ¿Usa ejemplos o razonamientos para sostener su postura?)
-            * **Estructura y Claridad (/10):** (¿La intervención tiene un inicio, desarrollo y final claros? ¿El mensaje es fácil de seguir?)
-            * **Lenguaje y Estilo (/10):** (¿El vocabulario es adecuado? ¿Usa pausas, énfasis o algún recurso retórico para dar fuerza al mensaje?)
-            * **Impacto Persuasivo (/10):** (¿Qué tan convincente ha sido en general? ¿Logra conectar y defender su punto eficazmente en el minuto disponible?)
-
-            ### 👍 Puntos Fuertes
-            * (Menciona 2 o 3 aspectos específicos que ha hecho muy bien.)
-
-            ### 💡 Áreas de Mejora
-            * (Ofrece 2 o 3 consejos prácticos y accionables. Por ejemplo: "Intenta empezar con una pregunta que atrape al oyente" o "Para fortalecer tu argumento, podrías haber mencionado que...")
-
-            ### ⭐ Estrategia para la Próxima Intervención
-            (Dale un consejo estratégico. Si acaba de argumentar a favor, sugiérele cómo prepararse para la refutación. Si acaba de refutar, dale un consejo general para cerrar un debate.)
-            `;
-
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-            const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
-            const data = await response.json();
-            return data.candidates[0].content.parts[0].text;
-        }
-        
-        function markdownToHtml(text) {
-            return text
-                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                .replace(/^\* (.*$)/gim, '<li>$1</li>')
-                .replace(/(\r\n|\n|\r)/gm, '<br>')
-                .replace(/<li>(.*?)<br>/g, '<li>$1</li>').replace(/(<br>)+<li>/g, '<li>').replace(/(<\/li>)<br>/g, '</li>').replace(/<\/h3><br>/g, '</h3>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        }
-        
-        // --- INICIALIZACIÓN ---
-        setupStage('favor');
-        setupStage('contra');
-    </script>
+<script src="app.js" type="module"></script>
 </body>
 </html>
+
 
