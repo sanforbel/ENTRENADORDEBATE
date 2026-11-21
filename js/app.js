@@ -48,7 +48,7 @@ function renderChrome() {
     <span title="${esc(t("side_pts_t"))}"><small>${esc(t("side_pts"))}</small><b id="sideXP"></b></span>`;
   document.getElementById("sideLang").innerHTML = langSelect("langSide");
   document.getElementById("langSide").onchange = e => setLang(e.target.value);
-  document.getElementById("sideCredit").innerHTML = `<a href="#info">${esc(t("credit_short"))}<br>${esc(t("copyright_short"))}</a>`;
+  document.getElementById("sideCredit").innerHTML = `<a href="#info">${esc(t("credit_short"))}<br>${esc(t("copyright_short"))}</a><br><a href="https://sandrafortanet.netlify.app/" target="_blank" rel="noopener">@sanforbel · sandrafortanet.netlify.app</a>`;
   document.getElementById("howTitle").textContent = t("how_title");
   document.getElementById("howBody").innerHTML = t("how_body");
   document.getElementById("howClose").textContent = t("close");

@@ -76,6 +76,7 @@ code { background: var(--paper-2); padding: .1em .35em; border-radius: 4px; }
 .mobile-lang { display: none; }
 .credits { border-left: 5px solid var(--accent); }
 .copyright { font-weight: 700; color: var(--ink); }
+.author-links a { color: var(--info); font-weight: 700; }
 .side-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid rgba(255,255,255,.15); padding-top: 14px; }
 .side-stats span { display: flex; flex-direction: column; padding: 0 6px; }
 .side-stats small { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: #9AA2B3; }

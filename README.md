@@ -88,7 +88,7 @@ js/app.js       Rutes, Inici, Calendari, Docent i Perfil
 
 ## Crèdits
 
-Aplicació creada per **Sandra Fortanet** en col·laboració amb **Claude** (Anthropic).
+Aplicació creada per **Sandra Fortanet** ([@sanforbel](https://github.com/sanforbel) · [sandrafortanet.netlify.app](https://sandrafortanet.netlify.app/)) en col·laboració amb **Claude** (Anthropic).
 
 ## Drets d'autor i llicència
 

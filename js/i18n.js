@@ -194,7 +194,7 @@ Després, escriu un comentari breu de jurat i formula una sola pregunta que ajud
     <div class="doc"><p class="doc-label">Llengües</p>
       <p>L'aplicació funciona en valencià, castellà, anglés i francés. La llengua es canvia des del menú lateral o des del Perfil. El progrés es manté en canviar de llengua.</p></div>`,
   credits_label: "Crèdits",
-  credits_html: `<p>Aplicació creada per <b>Sandra Fortanet</b> en col·laboració amb <b>Claude</b> (Anthropic), a partir d'una anàlisi pròpia de recursos per a ensenyar a argumentar. Tots els textos, personatges i exercicis són originals.</p>`
+  credits_html: `<p>Aplicació creada per <b>Sandra Fortanet</b> en col·laboració amb <b>Claude</b> (Anthropic), a partir d'una anàlisi pròpia de recursos per a ensenyar a argumentar. Tots els textos, personatges i exercicis són originals.</p><p class="author-links"><a href="https://sandrafortanet.netlify.app/" target="_blank" rel="noopener">@sanforbel · sandrafortanet.netlify.app</a></p>`
 };
 
 UI.es = {
@@ -359,7 +359,7 @@ Después, escribe un comentario breve de jurado y formula una sola pregunta que 
     <div class="doc"><p class="doc-label">Idiomas</p>
       <p>La aplicación funciona en valenciano, castellano, inglés y francés. El idioma se cambia desde el menú lateral o desde el Perfil. El progreso se mantiene al cambiar de idioma.</p></div>`,
   credits_label: "Créditos",
-  credits_html: `<p>Aplicación creada por <b>Sandra Fortanet</b> en colaboración con <b>Claude</b> (Anthropic), a partir de un análisis propio de recursos para enseñar a argumentar. Todos los textos, personajes y ejercicios son originales.</p>`
+  credits_html: `<p>Aplicación creada por <b>Sandra Fortanet</b> en colaboración con <b>Claude</b> (Anthropic), a partir de un análisis propio de recursos para enseñar a argumentar. Todos los textos, personajes y ejercicios son originales.</p><p class="author-links"><a href="https://sandrafortanet.netlify.app/" target="_blank" rel="noopener">@sanforbel · sandrafortanet.netlify.app</a></p>`
 };
 
 UI.en = {
@@ -524,7 +524,7 @@ Then write a short judge's comment and ask one single question that helps the st
     <div class="doc"><p class="doc-label">Languages</p>
       <p>The app works in Valencian, Spanish, English and French. Change the language from the side menu or your Profile. Your progress is kept when you switch.</p></div>`,
   credits_label: "Credits",
-  credits_html: `<p>App created by <b>Sandra Fortanet</b> in collaboration with <b>Claude</b> (Anthropic), based on her own analysis of resources for teaching argumentation. All texts, characters and exercises are original.</p>`
+  credits_html: `<p>App created by <b>Sandra Fortanet</b> in collaboration with <b>Claude</b> (Anthropic), based on her own analysis of resources for teaching argumentation. All texts, characters and exercises are original.</p><p class="author-links"><a href="https://sandrafortanet.netlify.app/" target="_blank" rel="noopener">@sanforbel · sandrafortanet.netlify.app</a></p>`
 };
 
 UI.fr = {
@@ -689,7 +689,7 @@ Ensuite, rédige un bref commentaire de jury et pose une seule question qui aide
     <div class="doc"><p class="doc-label">Langues</p>
       <p>L'application fonctionne en valencien, espagnol, anglais et français. On change de langue depuis le menu latéral ou le Profil. La progression est conservée.</p></div>`,
   credits_label: "Crédits",
-  credits_html: `<p>Application créée par <b>Sandra Fortanet</b> en collaboration avec <b>Claude</b> (Anthropic), à partir de sa propre analyse de ressources pour enseigner l'argumentation. Tous les textes, personnages et exercices sont originaux.</p>`
+  credits_html: `<p>Application créée par <b>Sandra Fortanet</b> en collaboration avec <b>Claude</b> (Anthropic), à partir de sa propre analyse de ressources pour enseigner l'argumentation. Tous les textes, personnages et exercices sont originaux.</p><p class="author-links"><a href="https://sandrafortanet.netlify.app/" target="_blank" rel="noopener">@sanforbel · sandrafortanet.netlify.app</a></p>`
 };
 
 /* ---------- API ---------- */
