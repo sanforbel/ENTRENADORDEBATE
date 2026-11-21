@@ -24,7 +24,7 @@ function renderSala() {
   view.innerHTML = "";
   const cfg = SALA && SALA.cfg || { mode: "torneig", topic: "", side: "A favor", lang: "ca-ES", turns: clone(DEFAULT_TURNS), rounds: 3, secs: 60, prep: 15 };
   const box = el(`<section class="page sala">
-    <header class="page-head"><h1>🎙️ Sala de debat</h1><p>Practica torns reals amb cronòmetre, micròfon i rúbrica.</p></header>
+    <header class="page-head"><h1>Sala de debat</h1><p>Practica torns reals amb cronòmetre, micròfon i rúbrica.</p></header>
     <div class="tabs" role="tablist">
       <button role="tab" data-m="torneig">Format torneig</button>
       <button role="tab" data-m="lliure">Lliure</button>
@@ -69,7 +69,7 @@ function renderSala() {
     } else {
       modeBox.innerHTML = `<p class="tip">El tema i la postura es trien a l'atzar. Després tens un temps de preparació i, en acabar, comença el debat amb els torns del format torneig.</p>
         <div class="grid2"><label>Minuts de preparació<input id="sPrep" type="number" min="1" max="30" value="${cfg.prep}"></label></div>
-        <div class="row"><button class="secondary" id="sRand">🎲 Genera un tema</button></div>`;
+        <div class="row"><button class="secondary" id="sRand">Sorteja un tema</button></div>`;
       modeBox.querySelector("#sPrep").oninput = e => cfg.prep = Math.max(1, +e.target.value || 15);
       modeBox.querySelector("#sRand").onclick = randomTopic;
     }
@@ -107,7 +107,7 @@ function renderPrep() {
   view.innerHTML = "";
   let left = SALA.cfg.prep * 60;
   const box = el(`<section class="page sala">
-    <header class="page-head"><h1>⏱️ Preparació</h1><p><b>${esc(SALA.cfg.topic)}</b> · Postura: <b>${esc(SALA.cfg.side)}</b></p></header>
+    <header class="page-head"><h1>Preparació</h1><p><b>${esc(SALA.cfg.topic)}</b> · Postura: <b>${esc(SALA.cfg.side)}</b></p></header>
     <div class="card center"><div class="big-timer" id="pT">${fmt(left)}</div>
       <ol class="plan"><li>Definiu les paraules clau.</li><li>Pluja d'idees a favor i en contra.</li><li>Trieu 2–3 arguments amb una evidència cadascun.</li><li>Prepareu l'obertura i la frase final.</li></ol>
       <textarea id="pNotes" rows="6" placeholder="Esquema de l'equip…">${esc(SALA.notes || "")}</textarea>
@@ -147,16 +147,16 @@ function renderTurn() {
   const mission = TURN_MISSIONS[turn.name] || "";
   view.innerHTML = "";
   const box = el(`<section class="page sala">
-    <header class="page-head"><h1>🎙️ ${esc(turn.name)} <small>(${SALA.i + 1}/${SALA.turns.length})</small></h1>
+    <header class="page-head"><h1>${esc(turn.name)} <small>(${SALA.i + 1}/${SALA.turns.length})</small></h1>
       <p><b>${esc(SALA.cfg.topic)}</b> · ${esc(SALA.cfg.side)}</p></header>
     <div class="turn-layout">
       <div class="card">
-        ${mission ? `<p class="mission">🎯 ${esc(mission)}</p>` : ""}
+        ${mission ? `<p class="mission"><b>Missió del torn:</b> ${esc(mission)}</p>` : ""}
         <div class="timer-wrap"><div class="big-timer" id="tT">${fmt(left)}</div><div class="bar-track"><span id="tBar" style="width:100%"></span></div></div>
         <div class="row center">
           <button class="primary" id="tPlay">▶ Inicia</button>
           <button class="secondary" id="tReset">↺ Reinicia</button>
-          <button class="mic" id="tMic" aria-pressed="false" title="Transcripció per veu">🎤 Micròfon</button>
+          <button class="mic" id="tMic" aria-pressed="false" title="Transcripció per veu">Micròfon</button>
         </div>
         <p class="tip" id="tMicTip"></p>
         <div class="transcript" id="tTrans" aria-live="polite"><span class="muted">La transcripció apareixerà ací. També pots escriure o anotar idees baix.</span></div>
@@ -189,7 +189,7 @@ function renderTurn() {
     const wpm = elapsed > 5 && finalText ? Math.round(finalText.trim().split(/\s+/).length / (elapsed / 60)) : null;
     const low = " " + strip(t).replace(/[.,;:!?¿¡«»"()]/g, " ").replace(/\s+/g, " ") + " ";
     const cr = CRUTCHES.reduce((a, c) => a + (low.split(" " + strip(c) + " ").length - 1), 0);
-    $("#tStats").innerHTML = `<span>📝 ${words} paraules</span>${wpm ? `<span title="Entre 120 i 160 és un ritme còmode">⏩ ${wpm} paraules/min</span>` : ""}<span title="eh, bo, o siga, vale…">🩼 ${cr} crosses verbals</span>`;
+    $("#tStats").innerHTML = `<span>${words} paraules</span>${wpm ? `<span title="Entre 120 i 160 és un ritme còmode">${wpm} paraules/min</span>` : ""}<span title="eh, bo, o siga, vale…">${cr} crosses verbals</span>`;
   };
   const drawTimer = () => {
     $("#tT").textContent = fmt(left);
@@ -265,9 +265,9 @@ function renderSalaSummary() {
   }
   view.innerHTML = "";
   const box = el(`<section class="page sala">
-    <header class="page-head"><h1>🏁 Debat acabat</h1><p><b>${esc(SALA.cfg.topic)}</b> · ${esc(SALA.cfg.side)}</p></header>
-    <div class="score-hero"><div class="score-num"><b>${grade != null ? grade.toFixed(1) : "—"}</b><span>NOTA /10</span></div>
-      <div><p>${sum} punts de ${12 * r.length} possibles en ${r.length} ${r.length === 1 ? "torn" : "torns"}.</p><p class="muted">+${5 * r.length} XP de pràctica</p></div></div>
+    <header class="page-head"><h1>Acta del debat</h1><p><b>${esc(SALA.cfg.topic)}</b> · ${esc(SALA.cfg.side)}</p></header>
+    <div class="score-hero"><div class="score-num"><b>${grade != null ? grade.toFixed(1) : "—"}</b><span>Nota /10</span></div>
+      <div><p>${sum} punts de ${12 * r.length} possibles en ${r.length} ${r.length === 1 ? "torn" : "torns"}.</p><p class="muted">+${5 * r.length} pts de pràctica</p></div></div>
     <div class="card"><table class="table"><thead><tr><th>Torn</th>${SALA_RUBRIC.map(c => `<th title="${esc(c.desc)}">${esc(c.title.split(" ")[0])}</th>`).join("")}<th>Total</th><th>Temps</th></tr></thead>
       <tbody>${r.map(x => `<tr><td>${esc(x.turn)}</td>${x.rubric.map(v => `<td>${v}</td>`).join("")}<td><b>${x.sum}/12</b></td><td>${fmt(x.used)} / ${fmt(x.planned)}</td></tr>`).join("")}</tbody></table></div>
     ${r.filter(x => x.comment).map(x => `<div class="card"><b>${esc(x.turn)}:</b> ${esc(x.comment)}</div>`).join("")}

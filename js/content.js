@@ -2,24 +2,22 @@
    Tots els textos, personatges i exemples són propis.
    Format de cada pas d'una lliçó: vegeu README.md (secció «Afegir contingut»). */
 
-const MASCOT = { name: "Vera", emoji: "🦇", desc: "la rata penada que no es creu res sense proves" };
-
 const CAST = {
-  nerea:  { name: "Nerea",     emoji: "👩🏽‍🦱", color: "#C2410C" },
-  pau:    { name: "Pau",       emoji: "🧑🏻",   color: "#1D4ED8" },
-  aitana: { name: "Aitana",    emoji: "👧🏼",   color: "#7C3AED" },
-  marc:   { name: "Marc",      emoji: "👦🏾",   color: "#0F766E" },
-  pepa:   { name: "Iaia Pepa", emoji: "👵🏻",   color: "#BE123C" },
-  vicent: { name: "Vicent",    emoji: "👨🏻‍🏫", color: "#4D7C0F" }
+  nerea:  { name: "Nerea",     color: "#C2410C" },
+  pau:    { name: "Pau",       color: "#1D4ED8" },
+  aitana: { name: "Aitana",    color: "#7C3AED" },
+  marc:   { name: "Marc",      color: "#0F766E" },
+  pepa:   { name: "Iaia Pepa", color: "#BE123C" },
+  vicent: { name: "Vicent",    color: "#4D7C0F" }
 };
 
 const RANKS = [
-  { name: "Novell",          xp: 0,    badge: "🦇" },
-  { name: "Argumentador",    xp: 120,  badge: "🦇📘" },
-  { name: "Refutador",       xp: 320,  badge: "🦇🛡️" },
-  { name: "Orador",          xp: 650,  badge: "🦇🎤" },
-  { name: "Estrateg",        xp: 1100, badge: "🦇♟️" },
-  { name: "Mestre del debat", xp: 1700, badge: "🦇👑" }
+  { name: "Oient", xp: 0 },
+  { name: "Debatent en pràctiques", xp: 120 },
+  { name: "Debatent", xp: 320 },
+  { name: "Orador/a titular", xp: 650 },
+  { name: "Capità/ana d'equip", xp: 1100 },
+  { name: "Jutge/essa", xp: 1700 }
 ];
 
 const UNITS = [
@@ -30,7 +28,7 @@ const UNITS = [
         id: "u1-l1", title: "Què és un argument?",
         steps: [
           { type: "intro", title: "Què és un argument?", hook: "Opinar és gratis. Argumentar costa una mica més… però convenç molt més.", cast: ["nerea", "pau"] },
-          { type: "chat", group: "1r B 📚",
+          { type: "chat", group: "1r B",
             msgs: [
               { who: "pau", text: "El viatge de fi de curs ha de ser a un parc temàtic i punt." },
               { who: "nerea", text: "Jo vote pel Pirineu: ix més barat, ja que l'autobús i l'alberg costen uns 90 € i el parc passa de 200 €." }
@@ -70,7 +68,7 @@ const UNITS = [
             answers: [0, 1, 3],
             why: "Les tres sostenen la proposta (calor, residus, atenció). El color del pati no hi té cap relació.",
             hint: "Una premissa ha de donar una raó per a posar fonts. Quina frase no en dona cap?" },
-          { type: "choice", level: "Repte", prompt: "«Tots els gats volen. El Misto és un gat. Per tant, el Misto vola.» Què li passa a este argument?",
+          { type: "choice", level: "Aprofundiment", prompt: "«Tots els gats volen. El Misto és un gat. Per tant, el Misto vola.» Què li passa a este argument?",
             options: ["L'estructura és correcta, però una premissa és falsa.", "L'estructura és incorrecta.", "És un argument perfecte."],
             answer: 0,
             why: "Si les premisses foren certes, la conclusió se'n deduiria. El problema és la primera premissa: els gats no volen. Un argument pot estar ben construït i, tot i això, partir d'una dada falsa.",
@@ -93,10 +91,10 @@ const UNITS = [
               "Detectar-la permet vore si l'argument s'aguanta de veritat.",
               "Truc: pregunta't <i>què hauria de ser cert perquè la conclusió seguisca?</i>"
             ] },
-          { type: "chat", group: "Assaig de teatre 🎭",
+          { type: "chat", group: "Assaig de teatre",
             msgs: [
               { who: "marc", text: "Hui no vindré a l'assaig: tinc partit." },
-              { who: "aitana", text: "D'acord… 🙄" }
+              { who: "aitana", text: "D'acord…" }
             ],
             prompt: "Quina premissa amaga Marc?",
             options: ["Que el partit és més important que l'assaig.", "Que no sap el paper.", "Que l'assaig és avorrit."], answer: 0,
@@ -138,10 +136,10 @@ const UNITS = [
         id: "u2-l1", title: "Ataca la idea, no la persona",
         steps: [
           { type: "intro", title: "Ataca la idea, no la persona", hook: "Quan no pots rebatre una idea, és temptador atacar qui la diu. No caigues en el parany.", cast: ["aitana", "pau", "marc", "nerea"] },
-          { type: "chat", group: "Consell d'alumnes 🗳️",
+          { type: "chat", group: "Consell d'alumnes",
             msgs: [
-              { who: "aitana", text: "Propose fer un hort al pati: aprendríem ciències i menjaríem més verdura 🥬" },
-              { who: "pau", text: "Ja, clar, tu que no saps ni regar un cactus 😂" }
+              { who: "aitana", text: "Propose fer un hort al pati: aprendríem ciències i menjaríem més verdura" },
+              { who: "pau", text: "Ja, clar, tu que no saps ni regar un cactus" }
             ],
             prompt: "Què fa Pau?",
             options: ["Rebat la proposta.", "Ataca Aitana en lloc de la proposta.", "Aporta una dada."], answer: 1,
@@ -196,7 +194,7 @@ const UNITS = [
               "<b>Falsa disjuntiva</b>: presentar dues opcions com si foren les úniques.",
               "<b>Generalització precipitada</b>: traure una regla general a partir de pocs casos."
             ] },
-          { type: "chat", group: "Fi de curs 🎉",
+          { type: "chat", group: "Fi de curs",
             msgs: [
               { who: "nerea", text: "O anem tots d'excursió al riu o no fem res a final de curs." },
               { who: "marc", text: "Hi ha més opcions: una gimcana pel poble, un dia de jocs a l'institut…" }
@@ -225,7 +223,7 @@ const UNITS = [
             parts: ["Marc escriu: «He preguntat a tres amics i ", { t: "a tots tres els agrada el reggaeton" }, ", així que ", { t: "a tot l'institut li agrada el reggaeton", ok: true }, ".»"],
             why: "Tres amics no representen tot l'institut: la mostra és minúscula i no aleatòria.",
             hint: "Quina part passa de «tres persones» a «tothom»?" },
-          { type: "choice", level: "Repte", prompt: "Una enquesta a 1.200 alumnes triats a l'atzar diu que el 70 % preferix entrar més tard. Usar-la en un debat és una apel·lació a la majoria?",
+          { type: "choice", level: "Aprofundiment", prompt: "Una enquesta a 1.200 alumnes triats a l'atzar diu que el 70 % preferix entrar més tard. Usar-la en un debat és una apel·lació a la majoria?",
             options: ["Sí, perquè es basa en el que pensa molta gent.", "No necessàriament: si la pregunta és què preferix l'alumnat, l'opinió majoritària és justament la dada rellevant.", "Sí: totes les enquestes són fal·làcies."],
             answer: 1,
             why: "La fal·làcia consistix a usar la popularitat com a prova de veritat. Ací no es diu que entrar tard siga «millor»: es mesura una preferència, i una mostra àmplia i aleatòria n'és una bona evidència.",
@@ -249,7 +247,7 @@ const UNITS = [
               "<b>Raona</b>: aporta la teua raó o la teua prova.",
               "<b>Remata</b>: connecta-ho amb la teua postura."
             ] },
-          { type: "chat", group: "Debat a classe 🎙️",
+          { type: "chat", group: "Debat a classe",
             msgs: [
               { who: "aitana", text: "Els uniformes eliminen les diferències socials a l'institut." },
               { who: "nerea", text: "Diuen que l'uniforme elimina les diferències socials. Però les diferències es veuen igual en les sabatilles, el mòbil o la motxilla. Per tant, l'uniforme no resol el problema que diu resoldre." }
@@ -479,7 +477,7 @@ const UNITS = [
   }
 ];
 
-/* Afirmacions del Repte del dia: cadascuna amaga una trampa argumentativa. */
+/* Mocions del dia: cadascuna amaga una trampa argumentativa. */
 const CLAIMS = [
   { id: "c1", author: "Rubèn, 4t ESO", text: "Des que tenim pissarres digitals han baixat les notes de matemàtiques. Les pissarres digitals fan que aprenguem menys.",
     flaw: "Correlació no implica causalitat", flawKeys: ["causa", "correlaci", "coincid", "altres factors", "no implica", "no vol dir", "pot ser", "altres raons", "no demostra"],
@@ -549,7 +547,7 @@ const TOPICS = [
   "Cal posar un límit d'edat per a tindre xarxes socials?"
 ];
 
-/* Idea del dia: màximes pròpies. */
+/* Frase per a la pissarra: màximes pròpies. */
 const IDEES = [
   "Guanyar una discussió no és el mateix que tindre raó.",
   "Si només coneixes els teus arguments, encara no coneixes el tema.",

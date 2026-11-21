@@ -107,6 +107,7 @@ function rankInfo(xp = S.xp) {
   const pct = next ? Math.round(100 * (xp - r.xp) / (next.xp - r.xp)) : 100;
   return { i, rank: r, next, pct };
 }
+function ptsLabel(n) { return n === 1 ? "1 punt" : n + " pts"; }
 function addXP(n) {
   const before = rankIndex(S.xp);
   S.xp += Math.max(0, Math.round(n));
@@ -195,19 +196,4 @@ function speak(text) {
   const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]+>/g, ""));
   u.lang = "ca-ES";
   speechSynthesis.speak(u);
-}
-function confetti() {
-  const box = el(`<div class="confetti" aria-hidden="true"></div>`);
-  const colors = ["#C2410C", "#7C3AED", "#0F766E", "#BE123C", "#1D4ED8", "#A16207", "#4D7C0F"];
-  for (let i = 0; i < 70; i++) {
-    const p = document.createElement("i");
-    p.style.left = Math.random() * 100 + "%";
-    p.style.background = colors[i % colors.length];
-    p.style.animationDelay = (Math.random() * 0.6) + "s";
-    p.style.animationDuration = (1.6 + Math.random() * 1.4) + "s";
-    p.style.transform = `rotate(${Math.random() * 360}deg)`;
-    box.appendChild(p);
-  }
-  document.body.appendChild(box);
-  setTimeout(() => box.remove(), 3500);
 }

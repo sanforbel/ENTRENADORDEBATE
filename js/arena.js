@@ -1,12 +1,36 @@
-/* Arena: repte del dia amb text lliure, coaching en viu, avaluació per rúbrica i coavaluació. */
+/* Moció del dia: posició, text lliure, papereta del jurat (0–4 per criteri), rèplica i jurat d'aula. */
 
 const ARENA_CRITERIA = [
-  { id: "logica", name: "Lògica", w: 0.25, good: "Lligues les idees amb connectors de causa i conseqüència.", weak: "Falta explicar per què: les idees apareixen soltes, sense connectors que les lliguen.", tip: "Afig almenys una raó amb «perquè», «ja que» o «per tant»." },
-  { id: "evidencia", name: "Evidència", w: 0.2, good: "Recolzes el que dius amb exemples o dades.", weak: "Tot es basa en opinió: no hi ha cap exemple, dada ni font.", tip: "Aporta un exemple concret o una dada amb la seua font («segons…»)." },
-  { id: "refutacio", name: "Refutació", w: 0.2, good: "Assenyales on falla el raonament de l'altra persona.", weak: "Dius si estàs d'acord o no, però no assenyales on falla el seu raonament.", tip: "Identifica la trampa: «això no demostra que…», «confon… amb…»." },
-  { id: "claredat", name: "Claredat", w: 0.15, good: "La postura és clara i el text s'entén bé.", weak: "Costa vore quina és la teua postura o les frases són massa llargues o massa curtes.", tip: "Comença amb una frase de postura («No em convenç perquè…») i acaba amb una conclusió." },
-  { id: "rellevancia", name: "Rellevància", w: 0.2, good: "Et centres en el que diu l'afirmació.", weak: "Part del que dius s'allunya de l'afirmació concreta.", tip: "Torna a llegir l'afirmació i respon exactament el que diu, citant-ne alguna paraula." }
+  { id: "logica", name: "Argumentació", w: 0.25,
+    good: "Les raons estan ben encadenades i porten a la conclusió.",
+    weak: "Les idees apareixen soltes: no queda clar per què se'n deduïx la teua posició.",
+    q: "Per què hauria d'acceptar el jurat la teua conclusió? Quina raó la sosté?" },
+  { id: "evidencia", name: "Evidències", w: 0.2,
+    good: "Hi ha exemples o dades que donen suport al que dius.",
+    weak: "Tot descansa en l'opinió: no hi ha cap exemple, dada ni font.",
+    q: "Quina dada o quin exemple concret demostraria el que afirmes?" },
+  { id: "refutacio", name: "Refutació", w: 0.2,
+    good: "Identifiques on falla el raonament de la moció.",
+    weak: "Prens posició, però no expliques on falla el raonament de la moció.",
+    q: "En quin punt exacte s'equivoca el raonament de la moció?" },
+  { id: "claredat", name: "Claredat i estructura", w: 0.15,
+    good: "La posició és explícita i el text té un inici i un tancament clars.",
+    weak: "Costa identificar la posició o el text no té una estructura clara.",
+    q: "Si el jurat només llegira la primera i l'última frase, sabria què defens?" },
+  { id: "rellevancia", name: "Pertinència", w: 0.2,
+    good: "Respons exactament el que planteja la moció.",
+    weak: "Part del text s'allunya del que planteja la moció.",
+    q: "Estàs responent exactament el que afirma la moció, o un tema veí?" }
 ];
+const LEVELS = ["Absent", "Inicial", "En procés", "Assolit", "Excel·lent"];
+const to4 = v => Math.max(0, Math.min(4, Math.round(v / 25)));
+const total20 = crit => ARENA_CRITERIA.reduce((a, c) => a + to4(crit[c.id]), 0);
+function decision(t) {
+  if (t >= 17) return "Intervenció guanyadora";
+  if (t >= 13) return "Intervenció sòlida";
+  if (t >= 9) return "Cal reforçar-la";
+  return "Insuficient";
+}
 
 const LEX = {
   logic: ["perque", "ja que", "per tant", "aixi que", "per aixo", "ates que", "com que", "de manera que", "en consequencia", "aleshores", "llavors", "porque", "ya que", "por tanto", "asi que", "por eso", "dado que", "puesto que", "por lo tanto", "implica", "es deduix", "es dedueix", "si es aixi", "suposa que"],
@@ -55,22 +79,16 @@ function analyseArgument(text, claim) {
   return { sc, global, hits, words, overlap };
 }
 
-function scoreLabel(g) {
-  if (g >= 80) return "Brillant";
-  if (g >= 60) return "Sòlid";
-  if (g >= 40) return "Encaminat";
-  return "En construcció";
-}
 
 function liveCoach(text, claim) {
   const a = analyseArgument(text, claim);
-  if (a.words < 5) return "✍️ Comença dient clarament si et convenç o no.";
-  if (!a.hits.stance) return "🧭 Deixa clara la postura en la primera frase («No em convenç perquè…»).";
-  if (!a.hits.logic) return "🔗 Explica per què: prova amb «perquè», «ja que» o «per tant».";
-  if (!a.hits.evidence && !a.hits.number) return "📊 I un exemple o una dada?";
-  if (!a.hits.refute && !a.hits.flaw) return "🛡️ Assenyala on falla: «això no demostra que…».";
-  if (!a.hits.conclusion) return "🏁 Tanca amb una conclusió: «per tant…».";
-  return "✅ Té bona pinta! Revisa-ho i envia-ho.";
+  if (a.words < 5) return "Nota al marge: comença declarant la teua posició.";
+  if (!a.hits.stance) return "Nota al marge: el jurat ha de saber la teua posició des de la primera frase.";
+  if (!a.hits.logic) return "Nota al marge: falta una raó explícita («perquè», «ja que», «per tant»).";
+  if (!a.hits.evidence && !a.hits.number) return "Nota al marge: no hi ha cap exemple ni dada.";
+  if (!a.hits.refute && !a.hits.flaw) return "Nota al marge: assenyala on falla el raonament de la moció.";
+  if (!a.hits.conclusion) return "Nota al marge: falta una frase de conclusió.";
+  return "Nota al marge: l'estructura és completa. Revisa-la i lliura-la.";
 }
 
 function renderArena(practiceId) {
@@ -79,33 +97,31 @@ function renderArena(practiceId) {
   const done = S.arena[k];
   const practice = !!practiceId;
   const claim = practice ? CLAIMS.find(c => c.id === practiceId) : arenaClaimFor(k);
-
-  if (done && !practice) return renderArenaResult(claim, done, false);
+  if (done && !practice) return renderBallot(claim, done, false);
 
   view.innerHTML = "";
   const box = el(`<section class="page arena">
-    <header class="page-head"><h1>⚔️ Arena</h1><p>${practice ? "Repte de pràctica" : "Repte del dia · " + esc(prettyDate(k))}</p></header>
-    <article class="claim-card">
-      <p class="kicker">Proposat per ${esc(claim.author)} <small>(personatge fictici)</small></p>
-      <blockquote>${esc(claim.text)}</blockquote>
-      <div class="vote" role="group" aria-label="Et convenç?">
-        <span>Et convenç?</span>
-        <button data-v="Sí">Sí</button><button data-v="No">No</button><button data-v="Depén">Depén</button>
-      </div>
+    <header class="page-head"><h1>Moció del dia</h1><p>${practice ? "Moció de pràctica" : esc(prettyDate(k))}</p></header>
+    <article class="doc motion">
+      <p class="doc-label">Moció presentada per ${esc(claim.author)} <span class="muted">(personatge fictici)</span></p>
+      <p class="motion-text">${esc(claim.text)}</p>
+      <fieldset class="position"><legend>La teua posició</legend>
+        <button data-v="A favor">A favor</button><button data-v="En contra">En contra</button><button data-v="Matisada">Matisada</button>
+      </fieldset>
     </article>
-    <div class="card write-card" hidden>
-      <label for="arText"><b>Defén-la o rebat-la</b> <small>(entre 40 i 200 paraules és l'ideal)</small></label>
-      <textarea id="arText" rows="8" placeholder="Ex.: No em convenç perquè…"></textarea>
-      <div class="coach-row"><span class="coach" id="arCoach" aria-live="polite">✍️ Comença dient clarament si et convenç o no.</span><span class="wc" id="arWc">0 paraules</span></div>
-      <label class="check"><input type="checkbox" id="arPeer"> Mode coavaluació: una companya o un company ho valora abans de vore la correcció automàtica</label>
-      <div class="row"><button class="primary big" id="arSend" disabled>Envia</button></div>
+    <div class="doc write-card" hidden>
+      <label for="arText">Intervenció escrita <span class="muted">(entre 40 i 200 paraules)</span></label>
+      <textarea id="arText" rows="9" placeholder="Senyores i senyors del jurat: …"></textarea>
+      <div class="coach-row"><span class="margin-note" id="arCoach" aria-live="polite">Nota al marge: comença declarant la teua posició.</span><span class="wc" id="arWc">0 paraules</span></div>
+      <label class="check"><input type="checkbox" id="arPeer"> Jurat d'aula: una altra persona avalua la intervenció abans de vore la papereta automàtica</label>
+      <div class="row"><button class="primary" id="arSend" disabled>Lliura la intervenció</button></div>
     </div>
   </section>`);
   view.appendChild(box);
   let vote = null;
-  box.querySelectorAll(".vote button").forEach(b => b.onclick = () => {
+  box.querySelectorAll(".position button").forEach(b => b.onclick = () => {
     vote = b.dataset.v;
-    box.querySelectorAll(".vote button").forEach(x => x.classList.toggle("sel", x === b));
+    box.querySelectorAll(".position button").forEach(x => x.classList.toggle("sel", x === b));
     box.querySelector(".write-card").hidden = false;
     box.querySelector("#arText").focus();
   });
@@ -118,53 +134,43 @@ function renderArena(practiceId) {
   };
   box.querySelector("#arSend").onclick = () => {
     const text = ta.value.trim();
-    const peerMode = box.querySelector("#arPeer").checked;
-    loading(view, () => {
-      const res = analyseArgument(text, claim);
-      const entry = { claim: claim.id, vote, text, score: res.global, crit: res.sc, improved: false, peer: null, practice };
-      if (peerMode) renderPeer(claim, entry, practice);
-      else commitArena(claim, entry, practice);
-    });
+    const res = analyseArgument(text, claim);
+    const entry = { claim: claim.id, vote, text, score: res.global, crit: res.sc, improved: false, peer: null, practice };
+    if (box.querySelector("#arPeer").checked) renderPeer(claim, entry, practice);
+    else commitArena(claim, entry, practice);
   };
 }
 
-function loading(view, cb) {
-  view.innerHTML = "";
-  view.appendChild(el(`<section class="page loading-screen"><div class="mascot-big spin">${MASCOT.emoji}</div><p>Buscant trampes en el raonament…</p></section>`));
-  setTimeout(cb, 1300);
-}
-
 function commitArena(claim, entry, practice) {
-  const base = practice ? 5 : 20;
-  const bonus = Math.round(entry.score / 10);
-  entry.xp = base + bonus;
-  const prevScores = S.arenaScores.slice();
-  entry.better = prevScores.length ? Math.round(100 * prevScores.filter(s => s < entry.score).length / prevScores.length) : null;
+  entry.xp = (practice ? 5 : 20) + total20(entry.crit);
   S.arenaScores.push(entry.score);
   if (!practice) S.arena[today()] = entry;
   markActive("arena");
   const r = addXP(entry.xp);
-  if (r.rankUp) { confetti(); toast("Has pujat de rang! Ara eres " + rankInfo().rank.name + "."); }
+  if (r.rankUp) toast("Nova credencial: " + rankInfo().rank.name + ".");
   save();
-  renderArenaResult(claim, entry, practice);
+  renderBallot(claim, entry, practice);
 }
 
 function renderPeer(claim, entry, practice) {
   const view = document.getElementById("view");
   view.innerHTML = "";
-  const levels = ["1 · Inicial", "2 · En procés", "3 · Assolit", "4 · Excel·lent"];
   const box = el(`<section class="page">
-    <header class="page-head"><h1>🤝 Coavaluació</h1><p>Passa el dispositiu a la persona que avaluarà. Valora cada criteri abans de vore la correcció automàtica.</p></header>
-    <div class="card"><p class="kicker">Afirmació</p><p>${esc(claim.text)}</p><p class="kicker">Resposta</p><p class="peer-text">${esc(entry.text)}</p></div>
-    <div class="card peer-grid">${ARENA_CRITERIA.map(c => `<div class="peer-row"><b>${c.name}</b><div class="seg" data-c="${c.id}">${levels.map((l, i) => `<button data-v="${i + 1}" title="${l}">${i + 1}</button>`).join("")}</div></div>`).join("")}
-      <label>Comentari (un punt fort i un a millorar)<textarea id="peerCom" rows="3"></textarea></label>
-      <div class="row"><button class="primary big" id="peerGo" disabled>Mostra la comparació</button></div></div>
+    <header class="page-head"><h1>Jurat d'aula</h1><p>Passa el dispositiu a la persona que farà de jurat. Ha de puntuar cada criteri abans de vore la papereta automàtica.</p></header>
+    <div class="doc"><p class="doc-label">Moció</p><p>${esc(claim.text)}</p><p class="doc-label">Intervenció (${esc(entry.vote)})</p><p class="peer-text">${esc(entry.text)}</p></div>
+    <div class="doc">
+      <table class="table ballot-input"><thead><tr><th>Criteri</th>${LEVELS.map((l, i) => `<th title="${l}">${i}</th>`).join("")}</tr></thead>
+      <tbody>${ARENA_CRITERIA.map(c => `<tr data-c="${c.id}"><td>${c.name}</td>${LEVELS.map((l, i) => `<td><button class="mark" data-v="${i}" aria-label="${c.name}: ${i}, ${l}"></button></td>`).join("")}</tr>`).join("")}</tbody></table>
+      <p class="tip">0 Absent · 1 Inicial · 2 En procés · 3 Assolit · 4 Excel·lent</p>
+      <label>Comentari del jurat d'aula<textarea id="peerCom" rows="3" placeholder="Un punt fort i un aspecte que cal millorar."></textarea></label>
+      <div class="row"><button class="primary" id="peerGo" disabled>Obri la papereta automàtica</button></div>
+    </div>
   </section>`);
   view.appendChild(box);
   const vals = {};
-  box.querySelectorAll(".seg").forEach(seg => seg.querySelectorAll("button").forEach(b => b.onclick = () => {
-    vals[seg.dataset.c] = +b.dataset.v;
-    seg.querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b));
+  box.querySelectorAll("tbody tr").forEach(tr => tr.querySelectorAll(".mark").forEach(b => b.onclick = () => {
+    vals[tr.dataset.c] = +b.dataset.v;
+    tr.querySelectorAll(".mark").forEach(x => { x.classList.toggle("on", x === b); x.textContent = x === b ? "✓" : ""; });
     box.querySelector("#peerGo").disabled = Object.keys(vals).length < ARENA_CRITERIA.length;
   }));
   box.querySelector("#peerGo").onclick = () => {
@@ -173,69 +179,51 @@ function renderPeer(claim, entry, practice) {
   };
 }
 
-function feedbackFor(entry, claim) {
+function ballotFor(entry, claim) {
   const sc = entry.crit;
-  const sorted = ARENA_CRITERIA.slice().sort((a, b) => sc[b.id] - sc[a.id]);
-  const strong = sorted[0];
-  // El que més puja la nota: el criteri amb més marge ponderat.
+  const best = ARENA_CRITERIA.slice().sort((a, b) => sc[b.id] - sc[a.id])[0];
   const lever = ARENA_CRITERIA.slice().sort((a, b) => (100 - sc[b.id]) * b.w - (100 - sc[a.id]) * a.w)[0];
-  const good = ARENA_CRITERIA.filter(c => sc[c.id] >= 60).map(c => c.good);
-  if (!good.length) good.push("T'has atrevit a posicionar-te: és el primer pas.");
   const a = analyseArgument(entry.text, claim);
-  const persuade = a.hits.evidence || a.hits.number ? "Convences sobretot amb exemples i dades."
-    : a.hits.refute ? "Convences sobretot assenyalant febleses de l'afirmació."
-    : a.hits.logic ? "Convences sobretot amb raonaments encadenats."
-    : "Ara mateix convences sobretot amb la teua opinió personal.";
-  const steps = [lever.tip];
-  const second = ARENA_CRITERIA.filter(c => c !== lever).sort((x, y) => sc[x.id] - sc[y.id])[0];
-  if (sc[second.id] < 70) steps.push(second.tip);
-  if (!a.hits.flaw) steps.push("Pista: pregunta't quina trampa amaga el raonament de " + claim.author.split(",")[0] + ".");
-  const summary = entry.score >= 80 ? "Resposta molt completa: postura clara, raons i proves."
-    : entry.score >= 60 ? `Bona base. El teu punt fort és la ${strong.name.toLowerCase()}; si treballes la ${lever.name.toLowerCase()}, la nota pujarà de valent.`
-    : entry.score >= 40 ? `Vas pel bon camí. Ara cal reforçar sobretot la ${lever.name.toLowerCase()}.`
-    : "Encara és un esbós: desenvolupa més la resposta amb raons i algun exemple.";
-  return { strong, lever, good, persuade, blind: lever.weak, steps, summary };
+  const comment = `${best.good} En canvi, ${lever.weak.charAt(0).toLowerCase() + lever.weak.slice(1)}`
+    + (a.hits.flaw ? " Has detectat la fal·làcia de la moció." : " No has arribat a nomenar la fal·làcia que amaga la moció.");
+  return { lever, comment };
 }
 
-function renderArenaResult(claim, entry, practice) {
+function renderBallot(claim, entry, practice) {
   const view = document.getElementById("view");
-  const fb = feedbackFor(entry, claim);
+  const b = ballotFor(entry, claim);
+  const t = total20(entry.crit);
+  const prev = S.arenaScores.length > 1 ? Math.round(S.arenaScores.slice(0, -1).reduce((x, y) => x + y, 0) / (S.arenaScores.length - 1) / 5) : null;
   view.innerHTML = "";
   const peerRows = entry.peer ? ARENA_CRITERIA.map(c => {
-    const auto = Math.max(1, Math.min(4, Math.ceil(entry.crit[c.id] / 25)));
-    const p = entry.peer.vals[c.id];
-    return `<tr><td>${c.name}</td><td>${p}</td><td>${auto}</td><td>${Math.abs(p - auto) >= 2 ? "⚠️ Comenteu-ho" : "👍"}</td></tr>`;
+    const auto = to4(entry.crit[c.id]), p = entry.peer.vals[c.id];
+    return `<tr><td>${c.name}</td><td>${p}</td><td>${auto}</td><td>${Math.abs(p - auto) >= 2 ? "Cal comentar-ho" : "Coincidix"}</td></tr>`;
   }).join("") : "";
   const box = el(`<section class="page arena-result">
-    <header class="page-head"><h1>⚔️ ${practice ? "Repte de pràctica" : "Repte del dia"}</h1><p>${esc(claim.text)}</p></header>
-    <div class="score-hero">
-      <div class="score-num"><b>${entry.score}</b><span>${esc(scoreLabel(entry.score).toUpperCase())}</span></div>
-      <div><p>${esc(fb.summary)}</p>
-        ${entry.better != null ? `<p class="muted">Millor que el ${entry.better} % de les teues respostes anteriors.</p>` : `<p class="muted">És la teua primera resposta a l'Arena.</p>`}
-        ${entry.xp ? `<p class="muted">+${entry.xp} XP${entry.improved ? " (inclou la bonificació per millorar-la)" : ""}</p>` : ""}</div>
+    <header class="page-head"><h1>Papereta del jurat</h1><p>${practice ? "Moció de pràctica" : "Moció del dia · " + esc(prettyDate(today()))}</p></header>
+    <div class="doc ballot">
+      <div class="ballot-head">
+        <div><p class="doc-label">Moció</p><p class="motion-text small">${esc(claim.text)}</p>
+          <p class="muted">Posició: <b>${esc(entry.vote || "—")}</b>${S.nick ? " · Debatent: " + esc(S.nick) : ""}</p></div>
+        <div class="ballot-total"><span class="doc-label">Total</span><b>${t}<small>/20</small></b><span class="decision">${esc(decision(t))}</span></div>
+      </div>
+      <table class="table ballot-table"><thead><tr><th>Criteri</th><th>Punts</th><th>Nivell</th></tr></thead>
+        <tbody>${ARENA_CRITERIA.map(c => { const v = to4(entry.crit[c.id]); return `<tr><td>${c.name}</td><td><span class="dots" aria-label="${v} de 4">${"●".repeat(v)}${"○".repeat(4 - v)}</span> ${v}/4</td><td>${LEVELS[v]}</td></tr>`; }).join("")}</tbody></table>
+      <div class="ballot-section"><p class="doc-label">Comentari del jurat</p><p>${esc(b.comment)}</p></div>
+      <div class="ballot-section question"><p class="doc-label">Pregunta del jurat</p><p>${esc(b.lever.q)}</p></div>
+      <p class="muted small">${prev != null ? `La teua mitjana anterior: ${prev}/20.` : "És la teua primera moció."} ${entry.xp ? `+${entry.xp} pts${entry.improved ? " (inclou la rèplica)" : ""}.` : ""}</p>
     </div>
-    <div class="card crit-list">${ARENA_CRITERIA.map(c => `
-      <div class="crit"><div class="crit-head"><b>${c.name}</b>
-        ${c === fb.strong ? `<span class="tag good">EL TEU FORT</span>` : ""}${c === fb.lever ? `<span class="tag lever">EL QUE MÉS LA PUJA</span>` : ""}
-        <span class="crit-val">${entry.crit[c.id]}</span></div>
-        <div class="bar-track"><span style="width:${entry.crit[c.id]}%;background:${barColor(entry.crit[c.id])}"></span></div></div>`).join("")}
-    </div>
-    <div class="fb-grid">
-      <div class="card fb ok"><h3>✅ El que has fet bé</h3><ul>${fb.good.map(g => `<li>${esc(g)}</li>`).join("")}</ul></div>
-      <div class="card fb warn"><h3>⚠️ Compte amb açò</h3><p><b>Com convences:</b> ${esc(fb.persuade)}</p><p><b>El teu punt cec:</b> ${esc(fb.blind)}</p></div>
-      <div class="card fb up"><h3>🚀 Com pujar-la</h3><ol>${fb.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol></div>
-    </div>
-    <details class="card trap"><summary>🪤 Quina era la trampa amagada?</summary><p><b>${esc(claim.flaw)}.</b> ${esc(claim.explain)}</p></details>
-    ${entry.peer ? `<div class="card"><h3>🤝 Coavaluació vs. correcció automàtica (escala 1–4)</h3>
-      <table class="table"><thead><tr><th>Criteri</th><th>Company/a</th><th>Automàtica</th><th></th></tr></thead><tbody>${peerRows}</tbody></table>
+    <details class="doc"><summary>Fal·làcia de la moció</summary><p><b>${esc(claim.flaw)}.</b> ${esc(claim.explain)}</p></details>
+    ${entry.peer ? `<div class="doc"><p class="doc-label">Jurat d'aula vs. papereta automàtica (0–4)</p>
+      <table class="table"><thead><tr><th>Criteri</th><th>Jurat d'aula</th><th>Automàtica</th><th></th></tr></thead><tbody>${peerRows}</tbody></table>
       ${entry.peer.comment ? `<p><b>Comentari:</b> ${esc(entry.peer.comment)}</p>` : ""}
-      <p class="muted">On hi ha diferències grans, discutiu-les: qui té més raó, la persona o la màquina?</p></div>` : ""}
-    <details class="card"><summary>La teua resposta</summary><p class="peer-text">${esc(entry.text)}</p></details>
+      <p class="muted">Allà on hi haja diferències de 2 punts o més, discutiu qui ho ha valorat millor.</p></div>` : ""}
+    <details class="doc"><summary>La teua intervenció</summary><p class="peer-text">${esc(entry.text)}</p></details>
     <div class="row wrap">
-      ${!entry.improved ? `<button class="primary" id="arImprove">🦇 Millora-la amb ${MASCOT.name}</button>` : ""}
-      <button class="secondary" id="arHow">Com t'avalue?</button>
+      ${!entry.improved ? `<button class="primary" id="arImprove">Presenta una rèplica</button>` : ""}
+      <button class="secondary" id="arHow">Criteris de correcció</button>
       <button class="secondary" id="arPrompt">Copia el prompt per a una IA</button>
-      <button class="secondary" id="arPractice">Practica amb un altre repte</button>
+      <button class="secondary" id="arPractice">Una altra moció de pràctica</button>
     </div>
   </section>`);
   view.appendChild(box);
@@ -246,38 +234,38 @@ function renderArenaResult(claim, entry, practice) {
     renderArena(others[Math.floor(Math.random() * others.length)].id);
   };
   const imp = box.querySelector("#arImprove");
-  if (imp) imp.onclick = () => renderImprove(claim, entry, practice, fb);
+  if (imp) imp.onclick = () => renderReply(claim, entry, practice, b);
 }
 
-function barColor(v) { return v >= 70 ? "var(--ok)" : v >= 45 ? "var(--warn)" : "var(--ko)"; }
-
-function renderImprove(claim, entry, practice, fb) {
+function renderReply(claim, entry, practice, b) {
   const view = document.getElementById("view");
   view.innerHTML = "";
-  const greet = S.nick ? `${esc(S.nick)}, ` : "";
   const box = el(`<section class="page">
-    <div class="mascot-talk"><span class="mascot-big">${MASCOT.emoji}</span>
-      <div class="bubble big"><p>${greet}fixem-nos en una sola cosa: <b>${esc(fb.lever.name.toLowerCase())}</b>.</p><p>${esc(fb.lever.weak)}</p><p><b>Prova açò:</b> ${esc(fb.lever.tip)}</p></div></div>
-    <div class="card"><label for="imText"><b>Reescriu la resposta</b></label>
-      <textarea id="imText" rows="9">${esc(entry.text)}</textarea>
-      <div class="coach-row"><span class="coach" id="imCoach">${esc(liveCoach(entry.text, claim))}</span></div>
-      <div class="row"><button class="primary big" id="imSend">Torna a avaluar</button><button class="secondary" id="imCancel">Deixa-ho estar</button></div></div>
+    <header class="page-head"><h1>Rèplica</h1><p>Tens una oportunitat de reescriure la intervenció. Respon la pregunta del jurat.</p></header>
+    <div class="doc ballot-section question"><p class="doc-label">Pregunta del jurat · ${esc(b.lever.name)}</p><p>${esc(b.lever.q)}</p></div>
+    <div class="doc"><label for="imText">Intervenció revisada</label>
+      <textarea id="imText" rows="10">${esc(entry.text)}</textarea>
+      <div class="coach-row"><span class="margin-note" id="imCoach">${esc(liveCoach(entry.text, claim))}</span></div>
+      <div class="row"><button class="primary" id="imSend">Lliura la rèplica</button><button class="secondary" id="imCancel">Torna a la papereta</button></div></div>
   </section>`);
   view.appendChild(box);
   const ta = box.querySelector("#imText");
   ta.oninput = () => box.querySelector("#imCoach").textContent = liveCoach(ta.value, claim);
-  box.querySelector("#imCancel").onclick = () => renderArenaResult(claim, entry, practice);
-  box.querySelector("#imSend").onclick = () => loading(view, () => {
+  box.querySelector("#imCancel").onclick = () => renderBallot(claim, entry, practice);
+  box.querySelector("#imSend").onclick = () => {
     const res = analyseArgument(ta.value, claim);
-    const gain = res.global - entry.score;
-    const upd = Object.assign({}, entry, { text: ta.value.trim(), score: Math.max(res.global, entry.score), crit: res.global >= entry.score ? res.sc : entry.crit, improved: true });
-    if (gain > 0) { addXP(15); upd.xp = (entry.xp || 0) + 15; toast(`Has pujat ${gain} punts! +15 XP`); }
-    else toast("Esta vegada no ha pujat. Mira els consells i torna-ho a provar demà.");
+    const better = total20(res.sc) > total20(entry.crit);
+    const upd = Object.assign({}, entry, { text: ta.value.trim(), improved: true });
+    if (better) {
+      upd.score = res.global; upd.crit = res.sc; upd.xp = (entry.xp || 0) + 15;
+      addXP(15);
+      toast(`La rèplica puja de ${total20(entry.crit)} a ${total20(res.sc)}/20. +15 pts`);
+    } else toast("La rèplica no millora la puntuació. Es manté la papereta anterior.");
     S.arenaScores[S.arenaScores.length - 1] = upd.score;
     if (!practice) S.arena[today()] = upd;
     save();
-    renderArenaResult(claim, upd, practice);
-  });
+    renderBallot(claim, upd, practice);
+  };
 }
 
 function aiPrompt(claim, text) {
@@ -287,14 +275,14 @@ AFIRMACIÓ A DEBATRE: "${claim.text}"
 
 RESPOSTA DE L'ALUMNE/A: "${text}"
 
-Avalua la resposta de 0 a 100 en cada criteri i justifica-ho breument:
-1. Lògica (raons lligades amb connectors, conclusió que se'n deduïx)
+Avalua la resposta de 0 a 4 en cada criteri (0 absent, 4 excel·lent) i justifica-ho breument:
+1. Argumentació (raons lligades amb connectors, conclusió que se'n deduïx)
 2. Evidència (exemples, dades i fonts pertinents)
 3. Refutació (identifica la trampa o fal·làcia de l'afirmació)
-4. Claredat (postura explícita, frases clares, conclusió)
-5. Rellevància (respon exactament el que diu l'afirmació)
+4. Claredat i estructura (postura explícita, frases clares, conclusió)
+5. Pertinència (respon exactament el que diu l'afirmació)
 
-Després, indica: el punt fort, el criteri que més faria pujar la nota, què ha fet bé, el seu punt cec i tres passos concrets per a millorar-la. No reescrigues la resposta per l'alumne/a: guia'l perquè la millore ell o ella.`;
+Després, escriu un comentari breu de jurat i formula una sola pregunta que ajude l'alumne/a a millorar la intervenció. No reescrigues la resposta per l'alumne/a: guia'l perquè la millore ell o ella.`;
 }
 
 function copyText(text, msg) {
