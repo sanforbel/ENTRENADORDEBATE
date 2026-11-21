@@ -12,7 +12,7 @@ const DEFAULT_STATE = {
   arenaScores: [],   // historial de notes globals
   task: null,        // { lesson, days: [0..6], classe, set }
   sala: [],          // historial de debats
-  settings: { theme: "auto", voice: false }
+  settings: { theme: "auto", voice: false, lang: null }
 };
 
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -48,12 +48,10 @@ function today() { return dateKey(new Date()); }
 function parseKey(k) { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); }
 function addDays(k, n) { const d = parseKey(k); d.setDate(d.getDate() + n); return dateKey(d); }
 function weekdayIdx(k) { return (parseKey(k).getDay() + 6) % 7; } // 0 = dilluns
-const WEEKDAYS_SHORT = ["dl.", "dt.", "dc.", "dj.", "dv.", "ds.", "dg."];
-const WEEKDAYS_LONG = ["dilluns", "dimarts", "dimecres", "dijous", "divendres", "dissabte", "diumenge"];
-const MONTHS = ["de gener", "de febrer", "de març", "d'abril", "de maig", "de juny", "de juliol", "d'agost", "de setembre", "d'octubre", "de novembre", "de desembre"];
+let WEEKDAYS_SHORT = DATES.va.short, WEEKDAYS_LONG = DATES.va.long, MONTHS = DATES.va.months;
 function prettyDate(k) {
   const d = parseKey(k);
-  return WEEKDAYS_LONG[weekdayIdx(k)] + " " + d.getDate() + " " + MONTHS[d.getMonth()];
+  return DATES[LANG].fmt(WEEKDAYS_LONG[weekdayIdx(k)], d.getDate(), MONTHS[d.getMonth()]);
 }
 function dayOfYear(k) {
   const d = parseKey(k);
@@ -107,7 +105,7 @@ function rankInfo(xp = S.xp) {
   const pct = next ? Math.round(100 * (xp - r.xp) / (next.xp - r.xp)) : 100;
   return { i, rank: r, next, pct };
 }
-function ptsLabel(n) { return n === 1 ? "1 punt" : n + " pts"; }
+function ptsLabel(n) { return n === 1 ? t("pt_1") : t("pt_n", { n }); }
 function addXP(n) {
   const before = rankIndex(S.xp);
   S.xp += Math.max(0, Math.round(n));
@@ -194,6 +192,6 @@ function speak(text) {
   if (!S.settings.voice || !("speechSynthesis" in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]+>/g, ""));
-  u.lang = "ca-ES";
+  u.lang = langInfo().speech;
   speechSynthesis.speak(u);
 }

@@ -2,7 +2,7 @@
    Tots els textos, personatges i exemples són propis.
    Format de cada pas d'una lliçó: vegeu README.md (secció «Afegir contingut»). */
 
-const CAST = {
+const _VA_CAST = {
   nerea:  { name: "Nerea",     color: "#C2410C" },
   pau:    { name: "Pau",       color: "#1D4ED8" },
   aitana: { name: "Aitana",    color: "#7C3AED" },
@@ -11,7 +11,7 @@ const CAST = {
   vicent: { name: "Vicent",    color: "#4D7C0F" }
 };
 
-const RANKS = [
+const _VA_RANKS = [
   { name: "Oient", xp: 0 },
   { name: "Debatent en pràctiques", xp: 120 },
   { name: "Debatent", xp: 320 },
@@ -20,7 +20,7 @@ const RANKS = [
   { name: "Jutge/jutgessa", xp: 1700 }
 ];
 
-const UNITS = [
+const _VA_UNITS = [
   {
     id: "u1", title: "Estructura de l'argument", icon: "🧱", color: "#C2410C",
     lessons: [
@@ -478,7 +478,7 @@ const UNITS = [
 ];
 
 /* Mocions del dia: cadascuna amaga una trampa argumentativa. */
-const CLAIMS = [
+const _VA_CLAIMS = [
   { id: "c1", author: "Rubèn, 4t ESO", text: "Des que tenim pissarres digitals han baixat les notes de matemàtiques. Les pissarres digitals fan que aprenguem menys.",
     flaw: "Correlació no implica causalitat", flawKeys: ["causa", "correlaci", "coincid", "altres factors", "no implica", "no vol dir", "pot ser", "altres raons", "no demostra"],
     explain: "Que dues coses passen alhora no vol dir que una cause l'altra. Les notes poden haver baixat per molts altres factors (temari, professorat, horaris…)." },
@@ -524,7 +524,7 @@ const CLAIMS = [
 ];
 
 /* Temes per al mode Improvisat de la Sala de debat. */
-const TOPICS = [
+const _VA_TOPICS = [
   "Cal prohibir els mòbils als centres educatius?",
   "Hauria de ser obligatori aprendre a programar a l'ESO?",
   "Els videojocs haurien de considerar-se un esport?",
@@ -548,7 +548,7 @@ const TOPICS = [
 ];
 
 /* Frase per a la pissarra: màximes pròpies. */
-const IDEES = [
+const _VA_IDEES = [
   "Guanyar una discussió no és el mateix que tindre raó.",
   "Si només coneixes els teus arguments, encara no coneixes el tema.",
   "Una bona pregunta desmunta més que un crit.",
@@ -562,7 +562,7 @@ const IDEES = [
 ];
 
 /* Criteris de la rúbrica de la Sala de debat (0–2). */
-const SALA_RUBRIC = [
+const _VA_SALA_RUBRIC = [
   { id: "tesi", title: "Tesi i postura", desc: "La postura s'entén des del principi i es manté." },
   { id: "estructura", title: "Arguments i estructura", desc: "Arguments clars, ordenats i connectats." },
   { id: "evidencia", title: "Evidències", desc: "Dades, exemples o fonts pertinents i citades." },
@@ -571,9 +571,19 @@ const SALA_RUBRIC = [
   { id: "temps", title: "Gestió del temps", desc: "Aprofita el torn sense passar-se'n." }
 ];
 
-const TURN_MISSIONS = {
+const _VA_TURN_MISSIONS = {
   "Exposició inicial": "Presenta la postura, definix els termes clau i anuncia la línia argumental.",
   "Refutació 1": "Respon els arguments principals de l'altre equip i reforça els vostres.",
   "Refutació 2": "Aprofundix en la refutació i tanca els fronts oberts.",
   "Conclusió": "Sintetitza el debat i explica per què heu guanyat. Cap argument nou."
 };
+
+const _VA_DEFAULT_TURN_NAMES = ["Exposició inicial", "Refutació 1", "Refutació 2", "Conclusió"];
+
+/* Contingut per llengua: el valencià és la base; les altres llengües són traduccions
+   que es fusionen sobre esta base (vegeu js/content.es.js, .en.js i .fr.js). */
+const CONTENT = {
+  va: { CAST: _VA_CAST, RANKS: _VA_RANKS, UNITS: _VA_UNITS, CLAIMS: _VA_CLAIMS, TOPICS: _VA_TOPICS, IDEES: _VA_IDEES,
+        SALA_RUBRIC: _VA_SALA_RUBRIC, TURN_MISSIONS: _VA_TURN_MISSIONS, DEFAULT_TURN_NAMES: _VA_DEFAULT_TURN_NAMES }
+};
+let CAST, RANKS, UNITS, CLAIMS, TOPICS, IDEES, SALA_RUBRIC, TURN_MISSIONS, DEFAULT_TURN_NAMES;

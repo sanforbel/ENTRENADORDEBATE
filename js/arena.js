@@ -1,68 +1,63 @@
 /* Moció del dia: posició, text lliure, papereta del jurat (0–4 per criteri), rèplica i jurat d'aula. */
 
-const ARENA_CRITERIA = [
-  { id: "logica", name: "Argumentació", w: 0.25,
-    good: "Les raons estan ben encadenades i porten a la conclusió.",
-    weak: "Les idees apareixen soltes: no queda clar per què se'n deduïx la teua posició.",
-    q: "Per què hauria d'acceptar el jurat la teua conclusió? Quina raó la sosté?" },
-  { id: "evidencia", name: "Evidències", w: 0.2,
-    good: "Hi ha exemples o dades que donen suport al que dius.",
-    weak: "Tot descansa en l'opinió: no hi ha cap exemple, dada ni font.",
-    q: "Quina dada o quin exemple concret demostraria el que afirmes?" },
-  { id: "refutacio", name: "Refutació", w: 0.2,
-    good: "Identifiques on falla el raonament de la moció.",
-    weak: "Prens posició, però no expliques on falla el raonament de la moció.",
-    q: "En quin punt exacte s'equivoca el raonament de la moció?" },
-  { id: "claredat", name: "Claredat i estructura", w: 0.15,
-    good: "La posició és explícita i el text té un inici i un tancament clars.",
-    weak: "Costa identificar la posició o el text no té una estructura clara.",
-    q: "Si el jurat només llegira la primera i l'última frase, sabria què defens?" },
-  { id: "rellevancia", name: "Pertinència", w: 0.2,
-    good: "Respons exactament el que planteja la moció.",
-    weak: "Part del text s'allunya del que planteja la moció.",
-    q: "Estàs responent exactament el que afirma la moció, o un tema veí?" }
+const CRIT_IDS = [
+  { id: "logica", w: 0.25 }, { id: "evidencia", w: 0.2 }, { id: "refutacio", w: 0.2 },
+  { id: "claredat", w: 0.15 }, { id: "rellevancia", w: 0.2 }
 ];
-const LEVELS = ["Absent", "Inicial", "En procés", "Assolit", "Excel·lent"];
+function arenaCriteria() { const c = t("crit"); return CRIT_IDS.map(x => Object.assign({}, x, c[x.id])); }
 const to4 = v => Math.max(0, Math.min(4, Math.round(v / 25)));
-const total20 = crit => ARENA_CRITERIA.reduce((a, c) => a + to4(crit[c.id]), 0);
-function decision(t) {
-  if (t >= 17) return "Intervenció guanyadora";
-  if (t >= 13) return "Intervenció sòlida";
-  if (t >= 9) return "Cal reforçar-la";
-  return "Insuficient";
-}
+const total20 = crit => CRIT_IDS.reduce((a, c) => a + to4(crit[c.id]), 0);
+function decision(n) { const d = t("dec"); return n >= 17 ? d[3] : n >= 13 ? d[2] : n >= 9 ? d[1] : d[0]; }
 
+/* Indicis lèxics en valencià, castellà, anglés i francés (sense accents: es compara amb strip()). */
 const LEX = {
-  logic: ["perque", "ja que", "per tant", "aixi que", "per aixo", "ates que", "com que", "de manera que", "en consequencia", "aleshores", "llavors", "porque", "ya que", "por tanto", "asi que", "por eso", "dado que", "puesto que", "por lo tanto", "implica", "es deduix", "es dedueix", "si es aixi", "suposa que"],
-  evidence: ["segons", "estudi", "dades", "dada", "enquesta", "informe", "percentatge", "per exemple", "com ara", "font", "investigaci", "experts", "estadistic", "segun", "estudio", "datos", "encuesta", "por ejemplo", "fuente", "investigacion", "un cas", "pensem en", "imagina"],
-  refute: ["pero", "tanmateix", "no obstant", "en canvi", "encara que", "malgrat", "sin embargo", "aunque", "no obstante", "en cambio", "fals", "no es cert", "no es veritat", "no vol dir", "no implica", "no demostra", "confon", "oblida", "no te en compte", "no tiene en cuenta", "falso", "no significa", "no demuestra", "fallacia", "falacia", "generalitz", "excepci", "aillat", "coincid", "correlaci", "trampa"],
-  stance: ["crec que", "pense que", "considere", "estic d'acord", "no estic d'acord", "discrepe", "rebutge", "defense", "em convenc", "no em convenc", "opine", "creo que", "pienso que", "estoy de acuerdo", "no estoy de acuerdo", "depen", "depende", "no es cert", "es fals", "te rao", "no te rao"],
-  conclusion: ["per tant", "en conclusio", "en resum", "per aixo", "aixi doncs", "en definitiva", "por tanto", "en conclusion", "en resumen", "en definitiva", "per acabar", "concloc"]
+  logic: ["perque", "ja que", "per tant", "aixi que", "per aixo", "ates que", "com que", "de manera que", "en consequencia", "aleshores", "llavors", "implica", "es deduix", "es dedueix", "suposa que",
+    "porque", "ya que", "por tanto", "asi que", "por eso", "dado que", "puesto que", "por lo tanto",
+    "because", "since", "therefore", " so ", "thus", "as a result", "which means", "hence", "this means",
+    "parce que", " car ", "puisque", "donc", "par consequent", "c'est pourquoi", "ainsi", "cela signifie"],
+  evidence: ["segons", "estudi", "dades", "dada", "enquesta", "informe", "percentatge", "per exemple", "com ara", "font", "investigaci", "experts", "estadistic", "un cas", "pensem en", "imagina",
+    "segun", "estudio", "datos", "encuesta", "por ejemplo", "fuente", "investigacion",
+    "according to", "study", "data", "survey", "report", "for example", "for instance", "source", "research", "per cent", "percent", "statistic",
+    "selon", "etude", "donnees", "enquete", "rapport", "par exemple", "recherche", "statistique", "pourcentage"],
+  refute: ["pero", "tanmateix", "no obstant", "en canvi", "encara que", "malgrat", "fals", "no es cert", "no es veritat", "no vol dir", "no implica", "no demostra", "confon", "oblida", "no te en compte", "fallacia",
+    "sin embargo", "aunque", "no obstante", "en cambio", "falso", "no significa", "no demuestra", "no tiene en cuenta", "falacia", "no quiere decir",
+    " but ", "however", "although", "whereas", "false", "not true", "doesn't mean", "does not mean", "doesn't prove", "does not prove", "confuses", "ignores", "fallacy",
+    " mais ", "cependant", "pourtant", "bien que", "meme si", "faux", "pas vrai", "ne veut pas dire", "ne prouve pas", "confond", "oublie", "sophisme",
+    "generalitz", "generaliz", "generalis", "excepci", "exception", "aillat", "aislado", "isolated", "isole", "coincid", "correlaci", "correlation", "trampa", "trap", "piege"],
+  stance: ["crec que", "pense que", "considere", "estic d'acord", "no estic d'acord", "discrepe", "rebutge", "defense", "em convenc", "no em convenc", "opine", "te rao", "no te rao", "es fals", "no es cert", "depen",
+    "creo que", "pienso que", "estoy de acuerdo", "no estoy de acuerdo", "me convence", "no me convence", "depende",
+    "i think", "i believe", "i agree", "i disagree", "i don't agree", "convinces me", "not convinced", "it depends", "is wrong", "is right",
+    "je pense", "je crois", "je suis d'accord", "je ne suis pas d'accord", "me convainc", "ca depend", "cela depend", "a tort", "a raison"],
+  conclusion: ["per tant", "en conclusio", "en resum", "per aixo", "aixi doncs", "en definitiva", "per acabar", "concloc",
+    "por tanto", "en conclusion", "en resumen", "para terminar",
+    "therefore", "in conclusion", "to sum up", "in short", "that's why", "that is why",
+    "donc", "pour conclure", "en resume", "c'est pourquoi"]
 };
-const STOP = new Set(["aquest", "aquesta", "aquests", "aquestes", "estes", "aquells", "aquelles", "tenim", "tindre", "perque", "sempre", "quan", "tambe", "nomes", "molts", "moltes", "totes", "eixe", "eixa", "aixo", "d'aixo", "seria", "podem", "poden", "estan", "estava", "havia", "haver", "fer-ho", "aleshores"]);
+const STOP = new Set(["aquest", "aquesta", "aquests", "aquestes", "estes", "aquells", "aquelles", "tenim", "tindre", "perque", "sempre", "quan", "tambe", "nomes", "molts", "moltes", "totes", "eixe", "eixa", "aixo", "seria", "podem", "poden", "estan", "estava", "havia", "haver", "aleshores",
+  "porque", "siempre", "tambien", "todos", "todas", "tenemos", "estos", "estas", "would", "there", "their", "about", "which", "these", "those", "parce", "toujours", "aussi", "toutes", "cette"]);
 
 function arenaClaimFor(k) { return CLAIMS[dayOfYear(k) % CLAIMS.length]; }
 
-function countHits(t, list) { return list.filter(w => t.includes(w)).length; }
+function countHits(txt, list) { return list.filter(w => txt.includes(w)).length; }
 function keywords(text) {
   return [...new Set(strip(text).split(/[^a-z'·-]+/).filter(w => w.length >= 5 && !STOP.has(w)).map(w => w.slice(0, 5)))];
 }
 
 function analyseArgument(text, claim) {
   const raw = text.trim();
-  const t = " " + strip(raw).replace(/\s+/g, " ") + " ";
+  const norm = " " + strip(raw).replace(/[’]/g, "'").replace(/\s+/g, " ") + " ";
   const words = raw ? raw.split(/\s+/).length : 0;
   const sentences = raw.split(/[.!?…]+/).map(s => s.trim()).filter(Boolean);
   const avgLen = sentences.length ? words / sentences.length : 0;
-  const firstSentence = " " + strip(sentences[0] || "") + " ";
+  const firstSentence = " " + strip(sentences[0] || "").replace(/[’]/g, "'") + " ";
   const hits = {
-    logic: countHits(t, LEX.logic),
-    evidence: countHits(t, LEX.evidence),
-    refute: countHits(t, LEX.refute),
+    logic: countHits(norm, LEX.logic),
+    evidence: countHits(norm, LEX.evidence),
+    refute: countHits(norm, LEX.refute),
     stance: countHits(firstSentence, LEX.stance),
-    conclusion: countHits(t, LEX.conclusion),
+    conclusion: countHits(norm, LEX.conclusion),
     number: /\d/.test(raw),
-    flaw: countHits(t, claim.flawKeys.map(strip))
+    flaw: countHits(norm, claim.flawKeys.map(strip))
   };
   const ck = keywords(claim.text), tk = new Set(keywords(raw));
   const overlap = ck.filter(k => tk.has(k)).length;
@@ -75,21 +70,22 @@ function analyseArgument(text, claim) {
   sc.rellevancia = 30 + 45 * Math.min(1, overlap / 4) + 12 * Math.min(hits.flaw, 2);
   const cap = words < 10 ? 25 : words < 25 ? 55 : 100;
   Object.keys(sc).forEach(k => sc[k] = Math.max(5, Math.min(cap, Math.round(sc[k]))));
-  const global = Math.round(ARENA_CRITERIA.reduce((a, c) => a + c.w * sc[c.id], 0));
+  const global = Math.round(CRIT_IDS.reduce((a, c) => a + c.w * sc[c.id], 0));
   return { sc, global, hits, words, overlap };
 }
 
-
 function liveCoach(text, claim) {
-  const a = analyseArgument(text, claim);
-  if (a.words < 5) return "Nota al marge: comença declarant la teua posició.";
-  if (!a.hits.stance) return "Nota al marge: el jurat ha de saber la teua posició des de la primera frase.";
-  if (!a.hits.logic) return "Nota al marge: falta una raó explícita («perquè», «ja que», «per tant»).";
-  if (!a.hits.evidence && !a.hits.number) return "Nota al marge: no hi ha cap exemple ni dada.";
-  if (!a.hits.refute && !a.hits.flaw) return "Nota al marge: assenyala on falla el raonament de la moció.";
-  if (!a.hits.conclusion) return "Nota al marge: falta una frase de conclusió.";
-  return "Nota al marge: l'estructura és completa. Revisa-la i lliura-la.";
+  const a = analyseArgument(text, claim), c = t("coach");
+  if (a.words < 5) return c[0];
+  if (!a.hits.stance) return c[1];
+  if (!a.hits.logic) return c[2];
+  if (!a.hits.evidence && !a.hits.number) return c[3];
+  if (!a.hits.refute && !a.hits.flaw) return c[4];
+  if (!a.hits.conclusion) return c[5];
+  return c[6];
 }
+
+const wordsLabel = n => tn("words", n);
 
 function renderArena(practiceId) {
   const view = document.getElementById("view");
@@ -101,20 +97,20 @@ function renderArena(practiceId) {
 
   view.innerHTML = "";
   const box = el(`<section class="page arena">
-    <header class="page-head"><h1>Moció del dia</h1><p>${practice ? "Moció de pràctica" : esc(prettyDate(k))}</p></header>
+    <header class="page-head"><h1>${esc(t("mo_title"))}</h1><p>${practice ? esc(t("mo_practice")) : esc(prettyDate(k))}</p></header>
     <article class="doc motion">
-      <p class="doc-label">Moció presentada per ${esc(claim.author)} <span class="muted">(personatge fictici)</span></p>
+      <p class="doc-label">${esc(t("mo_by", { a: claim.author }))} <span class="muted">${esc(t("fictional"))}</span></p>
       <p class="motion-text">${esc(claim.text)}</p>
-      <fieldset class="position"><legend>La teua posició</legend>
-        <button data-v="A favor">A favor</button><button data-v="En contra">En contra</button><button data-v="Matisada">Matisada</button>
+      <fieldset class="position"><legend>${esc(t("position"))}</legend>
+        <button data-v="for">${esc(t("pos_for"))}</button><button data-v="against">${esc(t("pos_against"))}</button><button data-v="nuanced">${esc(t("pos_nuanced"))}</button>
       </fieldset>
     </article>
     <div class="doc write-card" hidden>
-      <label for="arText">Intervenció escrita <span class="muted">(entre 40 i 200 paraules)</span></label>
-      <textarea id="arText" rows="9" placeholder="Senyores i senyors del jurat: …"></textarea>
-      <div class="coach-row"><span class="margin-note" id="arCoach" aria-live="polite">Nota al marge: comença declarant la teua posició.</span><span class="wc" id="arWc">0 paraules</span></div>
-      <label class="check"><input type="checkbox" id="arPeer"> Jurat d'aula: una altra persona avalua la intervenció abans de vore la papereta automàtica</label>
-      <div class="row"><button class="primary" id="arSend" disabled>Lliura la intervenció</button></div>
+      <label for="arText">${esc(t("written"))} <span class="muted">${esc(t("words_hint"))}</span></label>
+      <textarea id="arText" rows="9" placeholder="${esc(t("ph_text"))}"></textarea>
+      <div class="coach-row"><span class="margin-note" id="arCoach" aria-live="polite">${esc(t("coach")[0])}</span><span class="wc" id="arWc">${esc(wordsLabel(0))}</span></div>
+      <label class="check"><input type="checkbox" id="arPeer"> ${esc(t("peer_opt"))}</label>
+      <div class="row"><button class="primary" id="arSend" disabled>${esc(t("deliver"))}</button></div>
     </div>
   </section>`);
   view.appendChild(box);
@@ -128,7 +124,7 @@ function renderArena(practiceId) {
   const ta = box.querySelector("#arText");
   ta.oninput = () => {
     const n = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
-    box.querySelector("#arWc").textContent = n + (n === 1 ? " paraula" : " paraules");
+    box.querySelector("#arWc").textContent = wordsLabel(n);
     box.querySelector("#arCoach").textContent = liveCoach(ta.value, claim);
     box.querySelector("#arSend").disabled = n < 8;
   };
@@ -141,29 +137,32 @@ function renderArena(practiceId) {
   };
 }
 
+function voteLabel(v) { return { for: t("pos_for"), against: t("pos_against"), nuanced: t("pos_nuanced") }[v] || v || "—"; }
+
 function commitArena(claim, entry, practice) {
   entry.xp = (practice ? 5 : 20) + total20(entry.crit);
   S.arenaScores.push(entry.score);
   if (!practice) S.arena[today()] = entry;
   markActive("arena");
   const r = addXP(entry.xp);
-  if (r.rankUp) toast("Nova credencial: " + rankInfo().rank.name + ".");
+  if (r.rankUp) toast(t("rankup", { r: rankInfo().rank.name }));
   save();
   renderBallot(claim, entry, practice);
 }
 
 function renderPeer(claim, entry, practice) {
   const view = document.getElementById("view");
+  const crits = arenaCriteria(), levels = t("levels");
   view.innerHTML = "";
   const box = el(`<section class="page">
-    <header class="page-head"><h1>Jurat d'aula</h1><p>Passa el dispositiu a la persona que farà de jurat. Ha de puntuar cada criteri abans de vore la papereta automàtica.</p></header>
-    <div class="doc"><p class="doc-label">Moció</p><p>${esc(claim.text)}</p><p class="doc-label">Intervenció (${esc(entry.vote)})</p><p class="peer-text">${esc(entry.text)}</p></div>
+    <header class="page-head"><h1>${esc(t("peer_title"))}</h1><p>${esc(t("peer_sub"))}</p></header>
+    <div class="doc"><p class="doc-label">${esc(t("motion"))}</p><p>${esc(claim.text)}</p><p class="doc-label">${esc(t("intervention", { v: voteLabel(entry.vote) }))}</p><p class="peer-text">${esc(entry.text)}</p></div>
     <div class="doc">
-      <table class="table ballot-input"><thead><tr><th>Criteri</th>${LEVELS.map((l, i) => `<th title="${l}">${i}</th>`).join("")}</tr></thead>
-      <tbody>${ARENA_CRITERIA.map(c => `<tr data-c="${c.id}"><td>${c.name}</td>${LEVELS.map((l, i) => `<td><button class="mark" data-v="${i}" aria-label="${c.name}: ${i}, ${l}"></button></td>`).join("")}</tr>`).join("")}</tbody></table>
-      <p class="tip">0 Absent · 1 Inicial · 2 En procés · 3 Assolit · 4 Excel·lent</p>
-      <label>Comentari del jurat d'aula<textarea id="peerCom" rows="3" placeholder="Un punt fort i un aspecte que cal millorar."></textarea></label>
-      <div class="row"><button class="primary" id="peerGo" disabled>Obri la papereta automàtica</button></div>
+      <table class="table ballot-input"><thead><tr><th>${esc(t("criterion"))}</th>${levels.map((l, i) => `<th title="${esc(l)}">${i}</th>`).join("")}</tr></thead>
+      <tbody>${crits.map(c => `<tr data-c="${c.id}"><td>${esc(c.name)}</td>${levels.map((l, i) => `<td><button class="mark" data-v="${i}" aria-label="${esc(c.name)}: ${i}, ${esc(l)}"></button></td>`).join("")}</tr>`).join("")}</tbody></table>
+      <p class="tip">${esc(t("scale_tip"))}</p>
+      <label>${esc(t("peer_comment"))}<textarea id="peerCom" rows="3" placeholder="${esc(t("peer_comment_ph"))}"></textarea></label>
+      <div class="row"><button class="primary" id="peerGo" disabled>${esc(t("open_ballot"))}</button></div>
     </div>
   </section>`);
   view.appendChild(box);
@@ -171,7 +170,7 @@ function renderPeer(claim, entry, practice) {
   box.querySelectorAll("tbody tr").forEach(tr => tr.querySelectorAll(".mark").forEach(b => b.onclick = () => {
     vals[tr.dataset.c] = +b.dataset.v;
     tr.querySelectorAll(".mark").forEach(x => { x.classList.toggle("on", x === b); x.textContent = x === b ? "✓" : ""; });
-    box.querySelector("#peerGo").disabled = Object.keys(vals).length < ARENA_CRITERIA.length;
+    box.querySelector("#peerGo").disabled = Object.keys(vals).length < crits.length;
   }));
   box.querySelector("#peerGo").onclick = () => {
     entry.peer = { vals, comment: box.querySelector("#peerCom").value.trim() };
@@ -180,55 +179,54 @@ function renderPeer(claim, entry, practice) {
 }
 
 function ballotFor(entry, claim) {
-  const sc = entry.crit;
-  const best = ARENA_CRITERIA.slice().sort((a, b) => sc[b.id] - sc[a.id])[0];
-  const lever = ARENA_CRITERIA.slice().sort((a, b) => (100 - sc[b.id]) * b.w - (100 - sc[a.id]) * a.w)[0];
+  const sc = entry.crit, crits = arenaCriteria();
+  const best = crits.slice().sort((a, b) => sc[b.id] - sc[a.id])[0];
+  const lever = crits.slice().sort((a, b) => (100 - sc[b.id]) * b.w - (100 - sc[a.id]) * a.w)[0];
   const a = analyseArgument(entry.text, claim);
-  const comment = `${best.good} En canvi, ${lever.weak.charAt(0).toLowerCase() + lever.weak.slice(1)}`
-    + (a.hits.flaw ? " Has detectat la fal·làcia de la moció." : " No has arribat a nomenar la fal·làcia que amaga la moció.");
+  const comment = `${best.good} ${t("but")} ${lever.weak.charAt(0).toLowerCase() + lever.weak.slice(1)} ${a.hits.flaw ? t("flaw_yes") : t("flaw_no")}`;
   return { lever, comment };
 }
 
 function renderBallot(claim, entry, practice) {
   const view = document.getElementById("view");
-  const b = ballotFor(entry, claim);
-  const t = total20(entry.crit);
+  const b = ballotFor(entry, claim), crits = arenaCriteria(), levels = t("levels");
+  const tot = total20(entry.crit);
   const prev = S.arenaScores.length > 1 ? Math.round(S.arenaScores.slice(0, -1).reduce((x, y) => x + y, 0) / (S.arenaScores.length - 1) / 5) : null;
   view.innerHTML = "";
-  const peerRows = entry.peer ? ARENA_CRITERIA.map(c => {
+  const peerRows = entry.peer ? crits.map(c => {
     const auto = to4(entry.crit[c.id]), p = entry.peer.vals[c.id];
-    return `<tr><td>${c.name}</td><td>${p}</td><td>${auto}</td><td>${Math.abs(p - auto) >= 2 ? "Cal comentar-ho" : "Coincidix"}</td></tr>`;
+    return `<tr><td>${esc(c.name)}</td><td>${p}</td><td>${auto}</td><td>${esc(Math.abs(p - auto) >= 2 ? t("diff") : t("same"))}</td></tr>`;
   }).join("") : "";
   const box = el(`<section class="page arena-result">
-    <header class="page-head"><h1>Papereta del jurat</h1><p>${practice ? "Moció de pràctica" : "Moció del dia · " + esc(prettyDate(today()))}</p></header>
+    <header class="page-head"><h1>${esc(t("ballot_title"))}</h1><p>${practice ? esc(t("mo_practice")) : esc(t("mo_title") + " · " + prettyDate(today()))}</p></header>
     <div class="doc ballot">
       <div class="ballot-head">
-        <div><p class="doc-label">Moció</p><p class="motion-text small">${esc(claim.text)}</p>
-          <p class="muted">Posició: <b>${esc(entry.vote || "—")}</b>${S.nick ? " · Debatent: " + esc(S.nick) : ""}</p></div>
-        <div class="ballot-total"><span class="doc-label">Total</span><b>${t}<small>/20</small></b><span class="decision">${esc(decision(t))}</span></div>
+        <div><p class="doc-label">${esc(t("motion"))}</p><p class="motion-text small">${esc(claim.text)}</p>
+          <p class="muted">${esc(t("position_lbl") + t("colon"))}<b>${esc(voteLabel(entry.vote))}</b>${S.nick ? " · " + esc(t("debater") + t("colon")) + esc(S.nick) : ""}</p></div>
+        <div class="ballot-total"><span class="doc-label">${esc(t("total"))}</span><b>${tot}<small>/20</small></b><span class="decision">${esc(decision(tot))}</span></div>
       </div>
-      <table class="table ballot-table"><thead><tr><th>Criteri</th><th>Punts</th><th>Nivell</th></tr></thead>
-        <tbody>${ARENA_CRITERIA.map(c => { const v = to4(entry.crit[c.id]); return `<tr><td>${c.name}</td><td><span class="dots" aria-label="${v} de 4">${"●".repeat(v)}${"○".repeat(4 - v)}</span> ${v}/4</td><td>${LEVELS[v]}</td></tr>`; }).join("")}</tbody></table>
-      <div class="ballot-section"><p class="doc-label">Comentari del jurat</p><p>${esc(b.comment)}</p></div>
-      <div class="ballot-section question"><p class="doc-label">Pregunta del jurat</p><p>${esc(b.lever.q)}</p></div>
-      <p class="muted small">${prev != null ? `La teua mitjana anterior: ${prev}/20.` : "És la teua primera moció."} ${entry.xp ? `+${entry.xp} pts${entry.improved ? " (inclou la rèplica)" : ""}.` : ""}</p>
+      <table class="table ballot-table"><thead><tr><th>${esc(t("criterion"))}</th><th>${esc(t("points"))}</th><th>${esc(t("level"))}</th></tr></thead>
+        <tbody>${crits.map(c => { const v = to4(entry.crit[c.id]); return `<tr><td>${esc(c.name)}</td><td><span class="dots" aria-label="${esc(t("dots_aria", { v }))}">${"●".repeat(v)}${"○".repeat(4 - v)}</span> ${v}/4</td><td>${esc(levels[v])}</td></tr>`; }).join("")}</tbody></table>
+      <div class="ballot-section"><p class="doc-label">${esc(t("jury_comment"))}</p><p>${esc(b.comment)}</p></div>
+      <div class="ballot-section question"><p class="doc-label">${esc(t("jury_question"))}</p><p>${esc(b.lever.q)}</p></div>
+      <p class="muted small">${esc(prev != null ? t("prev_avg", { n: prev }) : t("first_motion"))} ${entry.xp ? esc(entry.improved ? t("xp_line_rep", { n: entry.xp }) : t("xp_line", { n: entry.xp })) : ""}</p>
     </div>
-    <details class="doc"><summary>Fal·làcia de la moció</summary><p><b>${esc(claim.flaw)}.</b> ${esc(claim.explain)}</p></details>
-    ${entry.peer ? `<div class="doc"><p class="doc-label">Jurat d'aula vs. papereta automàtica (0–4)</p>
-      <table class="table"><thead><tr><th>Criteri</th><th>Jurat d'aula</th><th>Automàtica</th><th></th></tr></thead><tbody>${peerRows}</tbody></table>
-      ${entry.peer.comment ? `<p><b>Comentari:</b> ${esc(entry.peer.comment)}</p>` : ""}
-      <p class="muted">Allà on hi haja diferències de 2 punts o més, discutiu qui ho ha valorat millor.</p></div>` : ""}
-    <details class="doc"><summary>La teua intervenció</summary><p class="peer-text">${esc(entry.text)}</p></details>
+    <details class="doc"><summary>${esc(t("fallacy"))}</summary><p><b>${esc(claim.flaw)}.</b> ${esc(claim.explain)}</p></details>
+    ${entry.peer ? `<div class="doc"><p class="doc-label">${esc(t("peer_vs"))}</p>
+      <table class="table"><thead><tr><th>${esc(t("criterion"))}</th><th>${esc(t("th_peer"))}</th><th>${esc(t("th_auto_col"))}</th><th></th></tr></thead><tbody>${peerRows}</tbody></table>
+      ${entry.peer.comment ? `<p><b>${esc(t("comment_lbl"))}</b> ${esc(entry.peer.comment)}</p>` : ""}
+      <p class="muted">${esc(t("peer_disc"))}</p></div>` : ""}
+    <details class="doc"><summary>${esc(t("your_int"))}</summary><p class="peer-text">${esc(entry.text)}</p></details>
     <div class="row wrap">
-      ${!entry.improved ? `<button class="primary" id="arImprove">Presenta una rèplica</button>` : ""}
-      <button class="secondary" id="arHow">Criteris de correcció</button>
-      <button class="secondary" id="arPrompt">Copia el prompt per a una IA</button>
-      <button class="secondary" id="arPractice">Una altra moció de pràctica</button>
+      ${!entry.improved ? `<button class="primary" id="arImprove">${esc(t("reply"))}</button>` : ""}
+      <button class="secondary" id="arHow">${esc(t("criteria_btn"))}</button>
+      <button class="secondary" id="arPrompt">${esc(t("copy_prompt"))}</button>
+      <button class="secondary" id="arPractice">${esc(t("other_motion"))}</button>
     </div>
   </section>`);
   view.appendChild(box);
   box.querySelector("#arHow").onclick = () => document.getElementById("howDialog").showModal();
-  box.querySelector("#arPrompt").onclick = () => copyText(aiPrompt(claim, entry.text), "Prompt copiat. Enganxa'l en l'assistent d'IA que useu al centre.");
+  box.querySelector("#arPrompt").onclick = () => copyText(aiPrompt(claim, entry.text), t("copied_prompt"));
   box.querySelector("#arPractice").onclick = () => {
     const others = CLAIMS.filter(c => c.id !== claim.id);
     renderArena(others[Math.floor(Math.random() * others.length)].id);
@@ -241,12 +239,12 @@ function renderReply(claim, entry, practice, b) {
   const view = document.getElementById("view");
   view.innerHTML = "";
   const box = el(`<section class="page">
-    <header class="page-head"><h1>Rèplica</h1><p>Tens una oportunitat de reescriure la intervenció. Respon la pregunta del jurat.</p></header>
-    <div class="doc ballot-section question"><p class="doc-label">Pregunta del jurat · ${esc(b.lever.name)}</p><p>${esc(b.lever.q)}</p></div>
-    <div class="doc"><label for="imText">Intervenció revisada</label>
+    <header class="page-head"><h1>${esc(t("reply_title"))}</h1><p>${esc(t("reply_sub"))}</p></header>
+    <div class="doc ballot-section question"><p class="doc-label">${esc(t("jury_question"))} · ${esc(b.lever.name)}</p><p>${esc(b.lever.q)}</p></div>
+    <div class="doc"><label for="imText">${esc(t("revised"))}</label>
       <textarea id="imText" rows="10">${esc(entry.text)}</textarea>
       <div class="coach-row"><span class="margin-note" id="imCoach">${esc(liveCoach(entry.text, claim))}</span></div>
-      <div class="row"><button class="primary" id="imSend">Lliura la rèplica</button><button class="secondary" id="imCancel">Torna a la papereta</button></div></div>
+      <div class="row"><button class="primary" id="imSend">${esc(t("deliver_reply"))}</button><button class="secondary" id="imCancel">${esc(t("back_ballot"))}</button></div></div>
   </section>`);
   view.appendChild(box);
   const ta = box.querySelector("#imText");
@@ -259,8 +257,8 @@ function renderReply(claim, entry, practice, b) {
     if (better) {
       upd.score = res.global; upd.crit = res.sc; upd.xp = (entry.xp || 0) + 15;
       addXP(15);
-      toast(`La rèplica puja de ${total20(entry.crit)} a ${total20(res.sc)}/20. +15 pts`);
-    } else toast("La rèplica no millora la puntuació. Es manté la papereta anterior.");
+      toast(t("reply_up", { a: total20(entry.crit), b: total20(res.sc) }));
+    } else toast(t("reply_same"));
     S.arenaScores[S.arenaScores.length - 1] = upd.score;
     if (!practice) S.arena[today()] = upd;
     save();
@@ -269,20 +267,7 @@ function renderReply(claim, entry, practice, b) {
 }
 
 function aiPrompt(claim, text) {
-  return `Actua com a jurat de debat escolar per a alumnat d'ESO. Respon en valencià normatiu (AVL).
-
-AFIRMACIÓ A DEBATRE: "${claim.text}"
-
-RESPOSTA DE L'ALUMNE/A: "${text}"
-
-Avalua la resposta de 0 a 4 en cada criteri (0 absent, 4 excel·lent) i justifica-ho breument:
-1. Argumentació (raons lligades amb connectors, conclusió que se'n deduïx)
-2. Evidència (exemples, dades i fonts pertinents)
-3. Refutació (identifica la trampa o fal·làcia de l'afirmació)
-4. Claredat i estructura (postura explícita, frases clares, conclusió)
-5. Pertinència (respon exactament el que diu l'afirmació)
-
-Després, escriu un comentari breu de jurat i formula una sola pregunta que ajude l'alumne/a a millorar la intervenció. No reescrigues la resposta per l'alumne/a: guia'l perquè la millore ell o ella.`;
+  return t("ai_prompt", { m: claim.text, x: text });
 }
 
 function copyText(text, msg) {
@@ -293,6 +278,6 @@ function copyText(text, msg) {
 function fallbackCopy(text, done) {
   const ta = el(`<textarea style="position:fixed;opacity:0"></textarea>`);
   ta.value = text; document.body.appendChild(ta); ta.select();
-  try { document.execCommand("copy"); done(); } catch (e) { prompt("Copia el text:", text); }
+  try { document.execCommand("copy"); done(); } catch (e) { prompt(t("copy_fallback"), text); }
   ta.remove();
 }

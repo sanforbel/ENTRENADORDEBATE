@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="ca">
+<html lang="ca-ES-valencia">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Entrenador de Debat</title>
-  <meta name="description" content="Temporada d'entrenament de debat: jornades d'argumentació, moció del dia amb papereta del jurat, sala de debat amb cronòmetre i panell docent.">
+  <meta name="description" content="Entrenador de Debat: jornades d'argumentació, moció del dia amb papereta del jurat, sala de debat i panell docent. En valencià, castellà, anglés i francés. Creat per Sandra Fortanet amb Claude.">
+  <meta name="author" content="Sandra Fortanet, amb Claude (Anthropic)">
   <meta name="theme-color" content="#1E2A44">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%231E2A44'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='%23F7F4EC' font-family='Georgia,serif'>§</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,32 +16,30 @@
 <body>
   <a class="skip" href="#view">Salta al contingut</a>
   <aside class="sidebar">
-    <a class="brand" href="#inici"><span class="seal" aria-hidden="true">§</span><span>Entrenador<br>de Debat</span></a>
-    <nav class="nav" aria-label="Navegació principal">
-      <a href="#inici"><span aria-hidden="true">◧</span><em>Inici</em></a>
-      <a href="#calendari"><span aria-hidden="true">▤</span><em>Calendari</em></a>
-      <a href="#mocio"><span aria-hidden="true">§</span><em>Moció</em></a>
-      <a href="#sala"><span aria-hidden="true">◉</span><em>Sala</em></a>
-      <a href="#docent"><span aria-hidden="true">✎</span><em>Docent</em></a>
-      <a href="#perfil"><span aria-hidden="true">◍</span><em>Perfil</em></a>
-    </nav>
-    <div class="side-stats" aria-label="Assistència i punts">
-      <span title="Dies seguits d'entrenament"><small>Assistència</small><b id="sideStreak">0 d</b></span>
-      <span title="Punts de temporada"><small>Punts</small><b id="sideXP">0 pts</b></span>
+    <a class="brand" href="#inici"><span class="seal" aria-hidden="true">§</span><span id="brandText">Entrenador<br>de Debat</span></a>
+    <nav class="nav" id="nav" aria-label="Navegació principal"></nav>
+    <div class="side-foot">
+      <div class="side-lang" id="sideLang"></div>
+      <div class="side-stats" id="sideStats"></div>
+      <p class="side-credit" id="sideCredit"></p>
     </div>
   </aside>
 
   <main id="view" tabindex="-1"></main>
 
   <dialog id="howDialog" aria-labelledby="howTitle">
-    <h2 id="howTitle">Criteris de correcció</h2>
+    <h2 id="howTitle"></h2>
     <div id="howBody"></div>
-    <div class="row"><button class="primary" id="howClose">Tanca</button></div>
+    <div class="row"><button class="primary" id="howClose"></button></div>
   </dialog>
 
-  <noscript><p style="padding:2rem">Esta aplicació necessita JavaScript.</p></noscript>
+  <noscript><p style="padding:2rem">Esta aplicació necessita JavaScript. · This app requires JavaScript.</p></noscript>
 
   <script src="js/content.js"></script>
+  <script src="js/content.es.js"></script>
+  <script src="js/content.en.js"></script>
+  <script src="js/content.fr.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/store.js"></script>
   <script src="js/lesson.js"></script>
   <script src="js/arena.js"></script>

@@ -1,6 +1,6 @@
 # Entrenador de Debat
 
-Aplicació web, plantejada com una temporada de lliga de debat, per a aprendre a argumentar, refutar i parlar en públic a l'ESO i al Batxillerat. Funciona sense servidor ni comptes: n'hi ha prou a obrir `index.html` o a publicar la carpeta en GitHub Pages. El progrés es guarda en el navegador de cada dispositiu (`localStorage`).
+Aplicació web multilingüe (valencià, castellà, anglés i francés), plantejada com una temporada de lliga de debat, per a aprendre a argumentar, refutar i parlar en públic a l'ESO i al Batxillerat. Funciona sense servidor ni comptes: n'hi ha prou a obrir `index.html` o a publicar la carpeta en GitHub Pages. El progrés es guarda en el navegador de cada dispositiu (`localStorage`).
 
 ## Seccions
 
@@ -11,7 +11,8 @@ Aplicació web, plantejada com una temporada de lliga de debat, per a aprendre a
 | **Moció** | Moció del dia: una afirmació amb una fal·làcia amagada. Prens posició, escrius la intervenció i reps una papereta del jurat (0–4 per criteri, total sobre 20), amb comentari i una pregunta per a millorar. |
 | **Sala de debat** | Simulació de torns (format torneig, lliure o improvisat) amb cronòmetre, micròfon, estadístiques d'oratòria i rúbrica 0–2. |
 | **Docent** | Assignació de tasques per enllaç, dies de sessió i importació dels fitxers de progrés de l'alumnat. |
-| **Perfil** | Credencial, pseudònim, estadístiques, preferències i exportació del progrés. |
+| **Perfil** | Credencial, pseudònim, estadístiques, preferències, llengua i exportació del progrés. |
+| **Com funciona** | Explicació de l'aplicació, criteris de correcció i crèdits, en la llengua triada. |
 
 ## Jornades
 
@@ -39,6 +40,14 @@ La puntuació la calcula un **corrector automàtic orientatiu i local**: no és 
 2. Compartiu l'enllaç (Aules, Classroom, QR). En obrir-lo, la tasca apareix a l'Inici de l'alumne i la jornada queda oberta.
 3. L'alumnat exporta el seu progrés des de **Perfil** (amb pseudònim o número de llista) i el lliura.
 4. Al panell Docent, importeu tots els `.json` de colp per a vore una taula i descarregar-la en CSV.
+
+## Llengües
+
+La interfície i tot el contingut estan disponibles en **valencià, castellà, anglés i francés**. La llengua es tria al menú lateral, a l'Inici (en mòbil), a «Com funciona» o al Perfil; la primera vegada es detecta la del navegador. El progrés es manté en canviar de llengua.
+
+- Textos de la interfície: `js/i18n.js`.
+- Contingut base (valencià): `js/content.js`. Traduccions: `js/content.es.js`, `js/content.en.js` i `js/content.fr.js`, que només contenen els textos i es fusionen sobre l'estructura base (respostes, ordre i peces es definixen una sola vegada).
+- El corrector de la Moció reconeix connectors i marques de refutació en les quatre llengües.
 
 ## Afegir contingut
 
@@ -76,3 +85,7 @@ js/app.js       Rutes, Inici, Calendari, Docent i Perfil
 - La transcripció per veu usa l'API Web Speech: funciona en Chrome i Edge i necessita HTTPS (GitHub Pages ho complix).
 - Les durades dels torns són orientatives: ajusteu-les a les bases del torneig.
 - Tots els textos i personatges (Nerea, Pau, Aitana, Marc, la iaia Pepa, Vicent) són originals. La identitat visual s'inspira en els documents d'una lliga de debat (calendari, acta, papereta del jurat, credencial).
+
+## Crèdits
+
+Aplicació creada per **Sandra Fortanet** en col·laboració amb **Claude** (Anthropic).

@@ -65,7 +65,17 @@ code { background: var(--paper-2); padding: .1em .35em; border-radius: 4px; }
 .nav a em { font-style: normal; }
 .nav a:hover { color: #fff; background: rgba(255,255,255,.06); }
 .nav a.on { color: #fff; border-left-color: #E8B04B; background: rgba(255,255,255,.08); font-weight: 700; }
-.side-stats { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid rgba(255,255,255,.15); padding-top: 14px; }
+.side-foot { margin-top: auto; display: grid; gap: 12px; }
+.side-lang .lang-select { width: 100%; background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.25); padding: 7px 10px; font-size: .9rem; }
+.side-lang .lang-select option { color: #1E2A44; }
+.side-credit { margin: 0; font-size: .75rem; line-height: 1.35; padding: 0 6px; }
+.side-credit a { color: #9AA2B3; text-decoration: none; }
+.side-credit a:hover { color: #fff; text-decoration: underline; }
+.head-with-lang { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.head-with-lang .lang-select { width: auto; padding: 6px 10px; font-size: .9rem; }
+.mobile-lang { display: none; }
+.credits { border-left: 5px solid var(--accent); }
+.side-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid rgba(255,255,255,.15); padding-top: 14px; }
 .side-stats span { display: flex; flex-direction: column; padding: 0 6px; }
 .side-stats small { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: #9AA2B3; }
 .side-stats b { color: #fff; }
@@ -343,9 +353,10 @@ details.doc[open] summary { margin-bottom: 8px; }
 @media (max-width: 720px) {
   body { grid-template-columns: 1fr; font-size: 16px; }
   .sidebar { position: fixed; bottom: 0; top: auto; left: 0; right: 0; height: auto; flex-direction: row; padding: 4px 2px calc(4px + env(safe-area-inset-bottom)); z-index: 20; }
-  .brand, .side-stats { display: none; }
+  .brand, .side-foot { display: none; }
+  .mobile-lang { display: block; }
   .nav { flex-direction: row; width: 100%; justify-content: space-around; gap: 0; }
-  .nav a { flex-direction: column; gap: 1px; padding: 6px 2px; font-size: .7rem; flex: 1; border-left: 0; border-top: 3px solid transparent; }
+  .nav a { flex-direction: column; gap: 1px; padding: 6px 1px; font-size: .62rem; text-align: center; line-height: 1.15; flex: 1; border-left: 0; border-top: 3px solid transparent; }
   .nav a.on { border-top-color: #E8B04B; }
   main { padding: 20px 16px 96px; }
   .home-grid, .home-grid.two { grid-template-columns: 1fr; }

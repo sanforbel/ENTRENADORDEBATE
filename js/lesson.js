@@ -2,10 +2,7 @@
 
 let RUN = null;
 
-const TYPE_LABEL = {
-  chat: "Transcripció", choice: "Pregunta", vs: "Cara a cara", multi: "Selecció",
-  tap: "Subratllat", cards: "Classificació", build: "Esquema"
-};
+const typeLabel = type => t("tl_" + type);
 
 function startLesson(lessonId) {
   const f = findLesson(lessonId);
@@ -16,8 +13,8 @@ function startLesson(lessonId) {
 
 function startReview() {
   const items = dueReviews().map(r => ({ step: stepFromKey(r.key), key: r.key })).filter(x => x.step);
-  if (!items.length) { toast("No tens cap exercici pendent de revisió."); location.hash = "#inici"; return; }
-  RUN = newRun("review", { title: "Sessió de revisió", rule: null }, { title: "Revisió", color: "#334155" }, shuffle(items).slice(0, 10));
+  if (!items.length) { toast(t("no_review")); location.hash = "#inici"; return; }
+  RUN = newRun("review", { title: t("review_title"), rule: null }, { title: t("review_unit"), color: "#334155" }, shuffle(items).slice(0, 10));
   renderLessonShell();
 }
 
@@ -38,23 +35,23 @@ function renderLessonShell() {
   const shell = el(`
     <section class="lesson" style="--unit:${RUN.unit.color}">
       <div class="lesson-top">
-        <button class="text-btn" id="lsClose">✕ Tanca</button>
-        <div class="lesson-title"><span class="kicker">${esc(RUN.mode === "review" ? "Revisió" : RUN.mode === "repeat" ? "Repetició" : RUN.unit.title)}</span><b>${esc(RUN.lesson.title)}</b></div>
-        <button class="text-btn" id="lsSpeak" title="Llig en veu alta">🔊</button>
+        <button class="text-btn" id="lsClose">${esc(t("ls_close"))}</button>
+        <div class="lesson-title"><span class="kicker">${esc(RUN.mode === "review" ? t("review_unit") : RUN.mode === "repeat" ? t("repeat_unit") : RUN.unit.title)}</span><b>${esc(RUN.lesson.title)}</b></div>
+        <button class="text-btn" id="lsSpeak" title="${esc(t("ls_speak"))}" aria-label="${esc(t("ls_speak"))}">🔊</button>
         <span class="pts" id="lsXP">0 pts</span>
       </div>
-      <div class="step-line"><span id="lsCount"></span><div class="progress" role="progressbar" aria-label="Progrés de la jornada"><span id="lsProg"></span></div></div>
+      <div class="step-line"><span id="lsCount"></span><div class="progress" role="progressbar" aria-label="${esc(t("ls_progress"))}"><span id="lsProg"></span></div></div>
       <div class="lesson-body" id="lsBody"></div>
       <div class="lesson-foot" id="lsFoot"></div>
     </section>`);
   view.appendChild(shell);
   shell.querySelector("#lsClose").onclick = () => {
-    if (confirm("Vols tancar la sessió? No es guardarà el progrés d'esta jornada.")) { endLessonMode(); location.hash = "#calendari"; }
+    if (confirm(t("ls_close_confirm"))) { endLessonMode(); location.hash = "#calendari"; }
   };
   shell.querySelector("#lsSpeak").onclick = () => {
     const st = RUN.items[RUN.i] && RUN.items[RUN.i].step;
     if (!st) return;
-    if (!S.settings.voice) { S.settings.voice = true; save(); toast("Lectura en veu alta activada (es pot desactivar al Perfil)."); }
+    if (!S.settings.voice) { S.settings.voice = true; save(); toast(t("voice_on")); }
     speak([st.title, st.hook, st.prompt, (st.points || []).join(". "), st.a, st.b].filter(Boolean).join(". "));
   };
   renderStep();
@@ -70,9 +67,9 @@ function updateTop() {
   const p = document.getElementById("lsProg");
   if (p) p.style.width = Math.round(100 * Math.min(RUN.i, n) / n) + "%";
   const c = document.getElementById("lsCount");
-  if (c) c.textContent = RUN.i < n ? `Exercici ${RUN.i + 1} de ${n}` : "Acta";
+  if (c) c.textContent = RUN.i < n ? t("ex_count", { a: RUN.i + 1, b: n }) : t("acta");
   const x = document.getElementById("lsXP");
-  if (x) x.textContent = RUN.xp + " pts";
+  if (x) x.textContent = RUN.xp + " " + t("pts");
 }
 
 function renderStep() {
@@ -87,11 +84,11 @@ function renderStep() {
   if (step.type === "intro") return renderIntro(step, body, foot);
   if (step.type === "concept") return renderConcept(step, body, foot);
 
-  const checkBtn = el(`<button class="primary" disabled>Comprova</button>`);
+  const checkBtn = el(`<button class="primary" disabled>${esc(t("check"))}</button>`);
   let W = null;
   W = (step.type === "cards" ? sortWidget : WIDGETS[step.type])(step, () => { if (W) checkBtn.disabled = !W.ready(); });
 
-  const head = el(`<div class="ex-head"><span class="ex-type">${esc(TYPE_LABEL[step.type] || "")}</span>${step.level ? `<span class="ex-flag">${esc(step.level)}</span>` : ""}${RUN.mode === "review" ? `<span class="ex-flag">Revisió</span>` : ""}</div>`);
+  const head = el(`<div class="ex-head"><span class="ex-type">${esc(typeLabel(step.type))}</span>${step.level ? `<span class="ex-flag">${esc(step.level)}</span>` : ""}${RUN.mode === "review" ? `<span class="ex-flag">${esc(t("flag_review"))}</span>` : ""}</div>`);
   body.appendChild(head);
   if (step.type === "chat") body.appendChild(transcriptBlock(step));
   body.appendChild(el(`<h2 class="step-prompt">${esc(step.prompt)}</h2>`));
@@ -107,19 +104,19 @@ function renderStep() {
     if (ok) {
       const gain = RUN.mode === "repeat" ? 3 : (attempts === 0 ? 10 : 5);
       stepDone(attempts === 0 ? "first" : "retry", gain);
-      verdict(foot, "ok", "Correcte", `+${gain} pts`, step.why);
+      verdict(foot, "ok", t("v_ok"), t("plus_pts", { n: gain }), step.why);
     } else {
       attempts++;
-      const v = verdict(foot, "ko", "Revisa-ho", attempts >= 2 ? "Pots demanar una pista o la resolució." : "Torna a llegir-ho amb calma.", null, true);
+      const v = verdict(foot, "ko", t("v_ko"), attempts >= 2 ? t("ko_help") : t("ko_reread"), null, true);
       const actions = v.querySelector(".verdict-actions");
       if (attempts >= 2) {
-        const hint = el(`<button class="text-btn">Pista</button>`);
-        const sol = el(`<button class="text-btn">Resolució</button>`);
+        const hint = el(`<button class="text-btn">${esc(t("hint"))}</button>`);
+        const sol = el(`<button class="text-btn">${esc(t("solution"))}</button>`);
         hint.onclick = () => { const p = v.querySelector(".verdict-note"); p.textContent = step.hint || step.why; p.hidden = false; };
-        sol.onclick = () => { W.reveal(); stepDone("solved", 0); verdict(foot, "neutral", "Resolt", "Passa a la llista de revisió.", step.why, false, true); };
+        sol.onclick = () => { W.reveal(); stepDone("solved", 0); verdict(foot, "neutral", t("v_resolved"), t("to_review"), step.why, false, true); };
         actions.append(hint, sol);
       }
-      const retry = el(`<button class="primary">Torna-ho a intentar</button>`);
+      const retry = el(`<button class="primary">${esc(t("retry"))}</button>`);
       retry.onclick = () => { W.reset(); W.lock(false); showCheck(); };
       actions.appendChild(retry);
     }
@@ -149,12 +146,12 @@ function verdict(foot, kind, stamp, sub, note, noContinue, noteOpen) {
     </div>`);
   const actions = v.querySelector(".verdict-actions");
   if (note && !noteOpen) {
-    const j = el(`<button class="text-btn">Justificació</button>`);
+    const j = el(`<button class="text-btn">${esc(t("justif"))}</button>`);
     j.onclick = () => { const n = v.querySelector(".verdict-note"); n.hidden = !n.hidden; };
     actions.appendChild(j);
   }
   if (!noContinue) {
-    const c = el(`<button class="primary">Continua</button>`);
+    const c = el(`<button class="primary">${esc(t("cont"))}</button>`);
     c.onclick = () => { RUN.i++; renderStep(); };
     actions.appendChild(c);
     setTimeout(() => c.focus(), 30);
@@ -163,7 +160,7 @@ function verdict(foot, kind, stamp, sub, note, noContinue, noteOpen) {
   return v;
 }
 
-function continueBtn(foot, label = "Continua") {
+function continueBtn(foot, label = t("cont")) {
   const c = el(`<button class="primary">${esc(label)}</button>`);
   c.onclick = () => { RUN.i++; renderStep(); };
   foot.appendChild(c);
@@ -174,32 +171,32 @@ function continueBtn(foot, label = "Continua") {
 function renderIntro(st, body, foot) {
   body.appendChild(el(`
     <div class="doc">
-      <p class="doc-label">Fitxa de la jornada</p>
+      <p class="doc-label">${esc(t("fitxa"))}</p>
       <h2 class="doc-title">${esc(st.title)}</h2>
       <dl class="fitxa">
-        <dt>Bloc</dt><dd>${esc(RUN.unit.title)}</dd>
-        <dt>Plantejament</dt><dd>${esc(st.hook)}</dd>
-        ${(st.cast || []).length ? `<dt>Intervenen</dt><dd>${st.cast.map(c => esc(CAST[c].name)).join(", ")}</dd>` : ""}
-        <dt>Exercicis</dt><dd>${RUN.items.filter(x => !["intro", "concept"].includes(x.step.type)).length}</dd>
+        <dt>${esc(t("f_bloc"))}</dt><dd>${esc(RUN.unit.title)}</dd>
+        <dt>${esc(t("f_plant"))}</dt><dd>${esc(st.hook)}</dd>
+        ${(st.cast || []).length ? `<dt>${esc(t("f_cast"))}</dt><dd>${st.cast.map(c => esc(CAST[c].name)).join(", ")}</dd>` : ""}
+        <dt>${esc(t("f_ex"))}</dt><dd>${RUN.items.filter(x => !["intro", "concept"].includes(x.step.type)).length}</dd>
       </dl>
     </div>`));
-  continueBtn(foot, "Comença la sessió");
+  continueBtn(foot, t("start_session"));
 }
 
 function renderConcept(st, body, foot) {
   body.appendChild(el(`
     <div class="doc reglament">
-      <p class="doc-label">Reglament de la jornada</p>
+      <p class="doc-label">${esc(t("reglament"))}</p>
       <h2 class="doc-title">${esc(st.title)}</h2>
-      ${st.points.map((p, i) => `<p class="article"><span>Art. ${i + 1}.</span> ${p}</p>`).join("")}
+      ${st.points.map((p, i) => `<p class="article"><span>${esc(t("art", { n: i + 1 }))}</span> ${p}</p>`).join("")}
     </div>`));
-  continueBtn(foot, "Llegit");
+  continueBtn(foot, t("read_btn"));
 }
 
 function transcriptBlock(st) {
   return el(`
-    <div class="transcript-doc" aria-label="Transcripció">
-      <p class="doc-label">${esc(st.group || "Conversa")}</p>
+    <div class="transcript-doc" aria-label="${esc(t("tl_chat"))}">
+      <p class="doc-label">${esc(st.group || t("conversa"))}</p>
       ${st.msgs.map(m => `<p><span class="speaker">${esc(CAST[m.who].name.toUpperCase())}.</span> ${esc(m.text)}</p>`).join("")}
     </div>`);
 }
@@ -211,8 +208,8 @@ const WIDGETS = {
   vs(st, onChange) {
     let sel = null;
     const w = el(`<div class="vs">
-      <button class="vs-card" data-i="0"><span class="vs-tag">Intervenció A</span>${esc(st.a)}</button>
-      <button class="vs-card" data-i="1"><span class="vs-tag">Intervenció B</span>${esc(st.b)}</button></div>`);
+      <button class="vs-card" data-i="0"><span class="vs-tag">${esc(t("vs_a"))}</span>${esc(st.a)}</button>
+      <button class="vs-card" data-i="1"><span class="vs-tag">${esc(t("vs_b"))}</span>${esc(st.b)}</button></div>`);
     const btns = [...w.querySelectorAll(".vs-card")];
     btns.forEach(b => b.onclick = () => { sel = +b.dataset.i; btns.forEach(x => x.classList.toggle("sel", x === b)); onChange(); });
     return {
@@ -225,7 +222,7 @@ const WIDGETS = {
   },
   multi(st, onChange) {
     const sel = new Set();
-    const w = el(`<div class="options multi"><p class="tip">Pots marcar-ne més d'una.</p>${st.options.map((o, i) => `<button class="opt" data-i="${i}" aria-pressed="false"><span class="box" aria-hidden="true"></span>${esc(o)}</button>`).join("")}</div>`);
+    const w = el(`<div class="options multi"><p class="tip">${esc(t("multi_tip"))}</p>${st.options.map((o, i) => `<button class="opt" data-i="${i}" aria-pressed="false"><span class="box" aria-hidden="true"></span>${esc(o)}</button>`).join("")}</div>`);
     const btns = [...w.querySelectorAll(".opt")];
     btns.forEach(b => b.onclick = () => {
       const i = +b.dataset.i;
@@ -246,7 +243,7 @@ const WIDGETS = {
   },
   tap(st, onChange) {
     let sel = null;
-    const w = el(`<div class="tap-wrap"><p class="tip">Toca el fragment per a subratllar-lo.</p><p class="tap-text"></p></div>`);
+    const w = el(`<div class="tap-wrap"><p class="tip">${esc(t("tap_tip"))}</p><p class="tap-text"></p></div>`);
     const p = w.querySelector(".tap-text");
     const frags = [];
     st.parts.forEach(part => {
@@ -270,12 +267,12 @@ const WIDGETS = {
     const filled = st.slots.map(() => null);
     const w = el(`<div class="build">
       <table class="schema"><tbody>${st.slots.map((s, i) => `<tr><th scope="row">${esc(s.label)}</th><td><button class="slot" data-s="${i}">—</button></td></tr>`).join("")}</tbody></table>
-      <p class="tip">Peces disponibles (toca-les per a col·locar-les; toca una casella plena per a buidar-la):</p>
+      <p class="tip">${esc(t("build_tip"))}</p>
       <div class="chips-pool">${shuffle(st.chips.map((c, i) => ({ c, i }))).map(o => `<button class="chip-btn" data-c="${o.i}">${esc(o.c)}</button>`).join("")}</div></div>`);
     const slots = [...w.querySelectorAll(".slot")];
     const chips = [...w.querySelectorAll(".chip-btn")];
     const draw = () => {
-      slots.forEach((s, i) => { s.textContent = filled[i] === null ? "(buit)" : st.chips[filled[i]]; s.classList.toggle("empty", filled[i] === null); });
+      slots.forEach((s, i) => { s.textContent = filled[i] === null ? t("empty") : st.chips[filled[i]]; s.classList.toggle("empty", filled[i] === null); });
       chips.forEach(c => c.classList.toggle("used", filled.includes(+c.dataset.c)));
       onChange();
     };
@@ -324,7 +321,7 @@ function sortWidget(st, onChange) {
   const rows = shuffle(st.cards.map((c, i) => ({ ...c, i })));
   const sel = {};
   const w = el(`<div class="sort-wrap"><table class="sort-table">
-    <thead><tr><th>Afirmació</th><th>${esc(st.labels[0])}</th><th>${esc(st.labels[1])}</th></tr></thead>
+    <thead><tr><th>${esc(t("th_statement"))}</th><th>${esc(st.labels[0])}</th><th>${esc(st.labels[1])}</th></tr></thead>
     <tbody>${rows.map(r => `<tr data-r="${r.i}"><td>${esc(r.t)}</td>${[0, 1].map(k => `<td class="cell"><button class="mark" data-k="${k}" aria-label="${esc(st.labels[k])}" aria-pressed="false"></button></td>`).join("")}</tr>`).join("")}</tbody>
   </table></div>`);
   const trs = [...w.querySelectorAll("tbody tr")];
@@ -401,34 +398,34 @@ function renderActa() {
   body.innerHTML = ""; foot.innerHTML = "";
   window.scrollTo(0, 0);
   const r = rankInfo();
-  const label = { first: "Correcte a la primera", retry: "Correcte en repetir", solved: "Resolt amb ajuda" };
+  const label = { first: t("r_first"), retry: t("r_retry"), solved: t("r_solved") };
   const rows = run.items.map((it, i) => ({ it, i, res: run.results[i] })).filter(x => x.res);
   const due = addDays(today(), REVIEW_BOXES[0]);
   body.appendChild(el(`
     <div class="doc acta">
-      <p class="doc-label">Acta de la ${run.mode === "review" ? "sessió de revisió" : "jornada"}</p>
+      <p class="doc-label">${esc(run.mode === "review" ? t("acta_r") : t("acta_j"))}</p>
       <h2 class="doc-title">${esc(run.lesson.title)}</h2>
       <p class="muted">${esc(prettyDate(today()))}${S.nick ? " · " + esc(S.nick) : ""}</p>
-      <table class="table acta-table"><thead><tr><th>Núm.</th><th>Exercici</th><th>Resultat</th></tr></thead>
-        <tbody>${rows.map((x, n) => `<tr class="${x.res}"><td>${n + 1}</td><td>${esc(TYPE_LABEL[x.it.step.type])}</td><td>${esc(label[x.res])}</td></tr>`).join("")}</tbody></table>
-      <p class="acta-sum"><b>${run.ok} de ${run.scored}</b> correctes a la primera · <b>+${run.xp} pts</b>${run.repeated ? ` · Repetició: ${run.repeated.ok}/${run.repeated.total} (+${run.repeated.xp} pts)` : ""}</p>
-      ${run.lesson.rule ? `<div class="conclusio"><p class="doc-label">Conclusió de la sessió</p><p class="conclusio-text">${esc(run.lesson.rule.text)}</p><p class="ref">Referència: ${esc(run.lesson.rule.source)}</p></div>` : ""}
-      ${run.mode === "lesson" && run.failed.length ? `<div class="revisar"><p class="doc-label">Per a revisar el ${esc(prettyDate(due))}</p>
-        ${run.failed.map(k => { const st = stepFromKey(k); return `<div class="rev-item"><b>${esc(st.prompt)}</b><p>Resposta: ${esc(answerText(st))}</p></div>`; }).join("")}</div>` : ""}
+      <table class="table acta-table"><thead><tr><th>${esc(t("th_num"))}</th><th>${esc(t("th_ex"))}</th><th>${esc(t("th_res"))}</th></tr></thead>
+        <tbody>${rows.map((x, n) => `<tr class="${x.res}"><td>${n + 1}</td><td>${esc(typeLabel(x.it.step.type))}</td><td>${esc(label[x.res])}</td></tr>`).join("")}</tbody></table>
+      <p class="acta-sum">${t("acta_sum", { a: run.ok, b: run.scored, p: run.xp })}${run.repeated ? esc(t("acta_rep", { a: run.repeated.ok, b: run.repeated.total, p: run.repeated.xp })) : ""}</p>
+      ${run.lesson.rule ? `<div class="conclusio"><p class="doc-label">${esc(t("conclusion"))}</p><p class="conclusio-text">${esc(run.lesson.rule.text)}</p><p class="ref">${esc(t("reference", { s: run.lesson.rule.source }))}</p></div>` : ""}
+      ${run.mode === "lesson" && run.failed.length ? `<div class="revisar"><p class="doc-label">${esc(t("to_review_on", { d: prettyDate(due) }))}</p>
+        ${run.failed.map(k => { const st = stepFromKey(k); return `<div class="rev-item"><b>${esc(st.prompt)}</b><p>${esc(t("answer", { a: answerText(st) }))}</p></div>`; }).join("")}</div>` : ""}
       <div class="acta-foot">
-        <div><span class="doc-label">Credencial</span><b>${esc(r.rank.name)}</b>${run.rankUp ? ` <span class="ex-flag">Nova</span>` : ""}<small>${r.next ? `${ptsLabel(r.next.xp - S.xp)} per a ${esc(r.next.name)}` : "Nivell màxim"}</small></div>
-        <div><span class="doc-label">Assistència</span><b>${streak()} ${streak() === 1 ? "dia seguit" : "dies seguits"}</b><small>Total: ${S.xp} pts</small></div>
+        <div><span class="doc-label">${esc(t("credential"))}</span><b>${esc(r.rank.name)}</b>${run.rankUp ? ` <span class="ex-flag">${esc(t("flag_new"))}</span>` : ""}<small>${r.next ? esc(t("to_next", { p: ptsLabel(r.next.xp - S.xp), r: r.next.name })) : esc(t("max_level"))}</small></div>
+        <div><span class="doc-label">${esc(t("attendance"))}</span><b>${esc(tn("streak", streak()).replace(/\.$/, ""))}</b><small>${esc(t("total_pts", { p: S.xp }))}</small></div>
       </div>
     </div>`));
-  const close = el(`<button class="primary">Tanca l'acta</button>`);
+  const close = el(`<button class="primary">${esc(t("close_acta"))}</button>`);
   close.onclick = () => { endLessonMode(); location.hash = "#inici"; };
   if (run.mode === "lesson" && run.failed.length && !run.repeated) {
-    const rep = el(`<button class="secondary">${run.failed.length === 1 ? "Repeteix ara la fallada" : "Repeteix ara les " + run.failed.length + " fallades"}</button>`);
+    const rep = el(`<button class="secondary">${esc(tn("repeat", run.failed.length))}</button>`);
     rep.onclick = () => startRepeat(run);
     foot.appendChild(rep);
   }
   if (!todayGoal().arena) {
-    const m = el(`<button class="secondary">Vés a la moció del dia</button>`);
+    const m = el(`<button class="secondary">${esc(t("go_motion"))}</button>`);
     m.onclick = () => { endLessonMode(); location.hash = "#mocio"; };
     foot.appendChild(m);
   }
