@@ -87,7 +87,7 @@ function renderSala() {
     cfg.topic = box.querySelector("#sTopic").value.trim();
     cfg.side = box.querySelector("#sSide").value;
     cfg.lang = box.querySelector("#sLang").value;
-    if (!cfg.topic) { box.querySelector("#sTopic").focus(); toast("Escriu un tema (o genera'n un en el mode Improvisat)."); return; }
+    if (!cfg.topic) { box.querySelector("#sTopic").focus(); toast("Escriu un tema (o sorteja'n un en el mode Improvisat)."); return; }
     const turns = cfg.mode === "lliure"
       ? Array.from({ length: cfg.rounds }, (_, i) => ({ name: "Torn " + (i + 1), min: cfg.secs / 60 }))
       : cfg.turns.filter(t => t.name.trim());
@@ -229,7 +229,7 @@ function renderTurn() {
     };
     REC.onerror = e => { $("#tMicTip").textContent = e.error === "not-allowed" ? "Cal donar permís al micròfon (i obrir l'app en HTTPS)." : "Error del micròfon: " + e.error; };
     REC.onend = () => { if (REC) try { REC.start(); } catch (e) {} };
-    try { REC.start(); $("#tMic").classList.add("on"); $("#tMic").setAttribute("aria-pressed", "true"); $("#tMicTip").textContent = "Escoltant…"; }
+    try { REC.start(); $("#tMic").classList.add("on"); $("#tMic").setAttribute("aria-pressed", "true"); $("#tMicTip").textContent = "Micròfon actiu: ja pots parlar."; }
     catch (e) { $("#tMicTip").textContent = "No s'ha pogut iniciar el micròfon."; REC = null; }
   };
   $("#tManual").oninput = drawStats;

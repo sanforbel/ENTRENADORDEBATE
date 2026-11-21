@@ -72,7 +72,7 @@ function renderHome() {
       <div class="doc">
         <p class="doc-label">Assistència d'esta setmana</p>
         ${attendanceStrip()}
-        <p class="muted small">${streak()} ${streak() === 1 ? "dia seguit" : "dies seguits"} entrenant.</p>
+        <p class="muted small">${streak()} ${streak() === 1 ? "dia seguit" : "dies seguits"} d'entrenament.</p>
       </div>
       <div class="doc credential">
         <p class="doc-label">Credencial</p>
@@ -250,7 +250,7 @@ function renderProfile() {
         <tr><td>Jornades disputades</td><td>${Object.keys(S.lessons).length}/${allLessons().length}</td></tr>
         <tr><td>Mocions respostes</td><td>${tots.length}</td></tr>
         <tr><td>Mitjana de les mocions</td><td>${tots.length ? (Math.round(10 * tots.reduce((a, b) => a + b, 0) / tots.length) / 10) + "/20" : "—"}</td></tr>
-        <tr><td>Dies seguits entrenant</td><td>${streak()}</td></tr>
+        <tr><td>Dies seguits d'entrenament</td><td>${streak()}</td></tr>
         <tr><td>Debats a la Sala</td><td>${S.sala.length}</td></tr>
         <tr><td>Exercicis pendents de revisió</td><td>${S.review.length}</td></tr>
       </tbody></table></div>

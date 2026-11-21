@@ -7,7 +7,7 @@ const CAST = {
   pau:    { name: "Pau",       color: "#1D4ED8" },
   aitana: { name: "Aitana",    color: "#7C3AED" },
   marc:   { name: "Marc",      color: "#0F766E" },
-  pepa:   { name: "Iaia Pepa", color: "#BE123C" },
+  pepa:   { name: "la iaia Pepa", color: "#BE123C" },
   vicent: { name: "Vicent",    color: "#4D7C0F" }
 };
 
@@ -16,8 +16,8 @@ const RANKS = [
   { name: "Debatent en pràctiques", xp: 120 },
   { name: "Debatent", xp: 320 },
   { name: "Orador/a titular", xp: 650 },
-  { name: "Capità/ana d'equip", xp: 1100 },
-  { name: "Jutge/essa", xp: 1700 }
+  { name: "Capità/capitana d'equip", xp: 1100 },
+  { name: "Jutge/jutgessa", xp: 1700 }
 ];
 
 const UNITS = [
@@ -147,7 +147,7 @@ const UNITS = [
             hint: "Pau parla de l'hort o d'Aitana?" },
           { type: "concept", title: "Dues trampes clàssiques",
             points: [
-              "<b>Atac a la persona</b> (ad hominem): criticar qui parla en lloc del que diu.",
+              "<b>Atac a la persona</b> (<i>ad hominem</i>): criticar qui parla en lloc del que diu.",
               "<b>Home de palla</b>: deformar l'argument contrari perquè siga més fàcil de tombar.",
               "<b>Com respondre</b>: torna a la idea original («Això no respon la meua proposta, que és…»)."
             ] },
@@ -190,7 +190,7 @@ const UNITS = [
           { type: "intro", title: "«Ho fa tothom»", hook: "Que molta gent ho pense no ho fa cert. I quasi mai hi ha només dues opcions.", cast: ["nerea", "marc"] },
           { type: "concept", title: "Tres trampes de les majories i els extrems",
             points: [
-              "<b>Apel·lació a la majoria</b> (ad populum): «és cert perquè ho pensa molta gent».",
+              "<b>Apel·lació a la majoria</b> (<i>ad populum</i>): «és cert perquè ho pensa molta gent».",
               "<b>Falsa disjuntiva</b>: presentar dues opcions com si foren les úniques.",
               "<b>Generalització precipitada</b>: traure una regla general a partir de pocs casos."
             ] },
@@ -520,7 +520,7 @@ const CLAIMS = [
     explain: "Que l'aprovat vinguera després de portar la samarreta no vol dir que la samarreta en siga la causa." },
   { id: "c14", author: "Irene, 4t ESO", text: "Hem gastat tant en la festa de final de curs que ara no podem cancel·lar-la, encara que ploga.",
     flaw: "Cost enfonsat", flawKeys: ["gastat", "ja esta", "cost", "recuperar", "futur", "decidir", "independent"],
-    explain: "Els diners ja gastats no es recuperen continuant. La decisió hauria de dependre del que convé ara i en el futur." }
+    explain: "Els diners ja gastats no es recuperen pel fet de continuar endavant. La decisió hauria de dependre del que convé ara i en el futur." }
 ];
 
 /* Temes per al mode Improvisat de la Sala de debat. */
