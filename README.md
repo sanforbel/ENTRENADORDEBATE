@@ -89,3 +89,7 @@ js/app.js       Rutes, Inici, Calendari, Docent i Perfil
 ## Crèdits
 
 Aplicació creada per **Sandra Fortanet** en col·laboració amb **Claude** (Anthropic).
+
+## Drets d'autor i llicència
+
+© 2026 Sandra Fortanet. Llicència **[CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.ca)**: es pot usar i compartir sense modificacions, citant l'autoria i sense finalitats comercials. No es permeten obres derivades (modificacions, adaptacions ni traduccions). Si voleu adaptar-la o traduir-la, demaneu permís a l'autora. Vegeu [LICENSE.md](LICENSE.md).

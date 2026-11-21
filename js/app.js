@@ -48,7 +48,7 @@ function renderChrome() {
     <span title="${esc(t("side_pts_t"))}"><small>${esc(t("side_pts"))}</small><b id="sideXP"></b></span>`;
   document.getElementById("sideLang").innerHTML = langSelect("langSide");
   document.getElementById("langSide").onchange = e => setLang(e.target.value);
-  document.getElementById("sideCredit").innerHTML = `<a href="#info">${esc(t("credit_short"))}</a>`;
+  document.getElementById("sideCredit").innerHTML = `<a href="#info">${esc(t("credit_short"))}<br>${esc(t("copyright_short"))}</a>`;
   document.getElementById("howTitle").textContent = t("how_title");
   document.getElementById("howBody").innerHTML = t("how_body");
   document.getElementById("howClose").textContent = t("close");
@@ -322,6 +322,7 @@ function renderInfo() {
     ${t("info_html")}
     <div class="doc"><p class="doc-label">${esc(t("how_title"))}</p>${t("how_body")}</div>
     <div class="doc credits"><p class="doc-label">${esc(t("credits_label"))}</p>${t("credits_html")}</div>
+    <div class="doc credits"><p class="doc-label">${esc(t("copyright_label"))}</p>${t("copyright_html")}</div>
   </section>`);
   view.appendChild(box);
   box.querySelector("#langInfo").onchange = e => setLang(e.target.value);

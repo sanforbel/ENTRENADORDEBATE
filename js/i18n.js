@@ -25,6 +25,9 @@ const DATES = {
 const UI = {};
 
 UI.va = {
+  copyright_short: "© 2026 Sandra Fortanet · Llicència CC BY-NC-ND 4.0",
+  copyright_label: "Drets d'autor i llicència",
+  copyright_html: "<p class=\"copyright\">© 2026 Sandra Fortanet · Llicència <a href=\"https://creativecommons.org/licenses/by-nc-nd/4.0/deed.ca\" target=\"_blank\" rel=\"noopener\">CC BY-NC-ND 4.0</a></p><p>Podeu <b>usar i compartir</b> l'aplicació sense modificacions, <b>citant l'autoria</b> («Entrenador de Debat, de Sandra Fortanet, creat amb Claude») i sense finalitats comercials. No es permet distribuir versions modificades, adaptades, remesclades ni traduïdes. <b>Si voleu adaptar-la o traduir-la, demaneu permís a l'autora.</b></p>",
   colon: ": ",
   brand: "Entrenador<br>de Debat", app_name: "Entrenador de Debat", skip: "Salta al contingut",
   nav_home: "Inici", nav_cal: "Calendari", nav_motion: "Moció", nav_sala: "Sala", nav_teacher: "Docent", nav_profile: "Perfil", nav_info: "Com funciona",
@@ -195,6 +198,9 @@ Després, escriu un comentari breu de jurat i formula una sola pregunta que ajud
 };
 
 UI.es = {
+  copyright_short: "© 2026 Sandra Fortanet · Licencia CC BY-NC-ND 4.0",
+  copyright_label: "Derechos de autor y licencia",
+  copyright_html: "<p class=\"copyright\">© 2026 Sandra Fortanet · Licencia <a href=\"https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY-NC-ND 4.0</a></p><p>Puedes <b>usar y compartir</b> la aplicación sin modificaciones, <b>citando la autoría</b> («Entrenador de Debate, de Sandra Fortanet, creado con Claude») y sin fines comerciales. No se permite distribuir versiones modificadas, adaptadas, remezcladas ni traducidas. <b>Si quieres adaptarla o traducirla, pide permiso a la autora.</b></p>",
   colon: ": ",
   brand: "Entrenador<br>de Debate", app_name: "Entrenador de Debate", skip: "Saltar al contenido",
   nav_home: "Inicio", nav_cal: "Calendario", nav_motion: "Moción", nav_sala: "Sala", nav_teacher: "Docente", nav_profile: "Perfil", nav_info: "Cómo funciona",
@@ -357,6 +363,9 @@ Después, escribe un comentario breve de jurado y formula una sola pregunta que 
 };
 
 UI.en = {
+  copyright_short: "© 2026 Sandra Fortanet · Licensed CC BY-NC-ND 4.0",
+  copyright_label: "Copyright and licence",
+  copyright_html: "<p class=\"copyright\">© 2026 Sandra Fortanet · Licensed <a href=\"https://creativecommons.org/licenses/by-nc-nd/4.0/\" target=\"_blank\" rel=\"noopener\">CC BY-NC-ND 4.0</a></p><p>You may <b>use and share</b> the app unchanged, <b>with attribution</b> (\"Debate Coach, by Sandra Fortanet, created with Claude\") and for non-commercial purposes. Modified, adapted, remixed or translated versions may not be distributed. <b>To adapt or translate it, please ask the author for permission.</b></p>",
   colon: ": ",
   brand: "Debate<br>Coach", app_name: "Debate Coach", skip: "Skip to content",
   nav_home: "Home", nav_cal: "Fixtures", nav_motion: "Motion", nav_sala: "Debate room", nav_teacher: "Teacher", nav_profile: "Profile", nav_info: "How it works",
@@ -519,6 +528,9 @@ Then write a short judge's comment and ask one single question that helps the st
 };
 
 UI.fr = {
+  copyright_short: "© 2026 Sandra Fortanet · Licence CC BY-NC-ND 4.0",
+  copyright_label: "Droits d'auteur et licence",
+  copyright_html: "<p class=\"copyright\">© 2026 Sandra Fortanet · Licence <a href=\"https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr\" target=\"_blank\" rel=\"noopener\">CC BY-NC-ND 4.0</a></p><p>Vous pouvez <b>utiliser et partager</b> l'application sans modification, <b>en citant l'autrice</b> (« Entraîneur de débat, de Sandra Fortanet, créé avec Claude ») et sans usage commercial. La diffusion de versions modifiées, adaptées, remixées ou traduites n'est pas autorisée. <b>Pour l'adapter ou la traduire, demandez l'autorisation à l'autrice.</b></p>",
   colon: " : ",
   brand: "Entraîneur<br>de débat", app_name: "Entraîneur de débat", skip: "Aller au contenu",
   nav_home: "Accueil", nav_cal: "Calendrier", nav_motion: "Motion", nav_sala: "Salle", nav_teacher: "Enseignant", nav_profile: "Profil", nav_info: "Mode d'emploi",
