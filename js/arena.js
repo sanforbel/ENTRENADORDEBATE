@@ -15,10 +15,10 @@ const LEX = {
     "porque", "ya que", "por tanto", "asi que", "por eso", "dado que", "puesto que", "por lo tanto",
     "because", "since", "therefore", " so ", "thus", "as a result", "which means", "hence", "this means",
     "parce que", " car ", "puisque", "donc", "par consequent", "c'est pourquoi", "ainsi", "cela signifie"],
-  evidence: ["segons", "estudi", "dades", "dada", "enquesta", "informe", "percentatge", "per exemple", "com ara", "font", "investigaci", "experts", "estadistic", "un cas", "pensem en", "imagina",
-    "segun", "estudio", "datos", "encuesta", "por ejemplo", "fuente", "investigacion",
-    "according to", "study", "data", "survey", "report", "for example", "for instance", "source", "research", "per cent", "percent", "statistic",
-    "selon", "etude", "donnees", "enquete", "rapport", "par exemple", "recherche", "statistique", "pourcentage"],
+  evidence: ["segons", "estudi", "dades", "dada", "enquesta", "informe", "percentatge", "per exemple", "com ara", "font", "investigaci", "experts", "estadistic", "un cas", "pensem en", "imagina", "al meu institut", "al nostre institut", "a la meua classe", "en el meu cas", "com quan", "posem per cas",
+    "segun", "estudio", "datos", "encuesta", "por ejemplo", "fuente", "investigacion", "en mi instituto", "en nuestro instituto", "en mi clase", "en mi caso", "como cuando",
+    "according to", "study", "data", "survey", "report", "for example", "for instance", "source", "research", "per cent", "percent", "statistic", "in my school", "at my school", "in my class", "in my case", "like when",
+    "selon", "etude", "donnees", "enquete", "rapport", "par exemple", "recherche", "statistique", "pourcentage", "dans mon lycee", "dans mon college", "dans ma classe", "dans mon cas", "comme quand"],
   refute: ["pero", "tanmateix", "no obstant", "en canvi", "encara que", "malgrat", "fals", "no es cert", "no es veritat", "no vol dir", "no implica", "no demostra", "confon", "oblida", "no te en compte", "fallacia",
     "sin embargo", "aunque", "no obstante", "en cambio", "falso", "no significa", "no demuestra", "no tiene en cuenta", "falacia", "no quiere decir",
     " but ", "however", "although", "whereas", "false", "not true", "doesn't mean", "does not mean", "doesn't prove", "does not prove", "confuses", "ignores", "fallacy",
@@ -68,6 +68,13 @@ function analyseArgument(text, claim) {
   sc.refutacio = 15 + 18 * Math.min(hits.refute, 3) + 20 * Math.min(hits.flaw, 2);
   sc.claredat = 45 + (hits.stance ? 20 : 0) + (avgLen >= 8 && avgLen <= 28 ? 15 : -10) + (hits.conclusion ? 10 : 0) + (words >= 40 && words <= 250 ? 10 : 0) - (words < 20 ? 20 : 0);
   sc.rellevancia = 30 + 45 * Math.min(1, overlap / 4) + 12 * Math.min(hits.flaw, 2);
+  /* Antifarciment: si hi ha massa marques per paraula (connectors i paraules clau
+     amuntegats sense desenvolupar), es rebaixen els criteris que depenen d'indicis. */
+  const markers = hits.logic + hits.evidence + hits.refute + hits.conclusion;
+  const density = words ? markers / words : 0;
+  const stuffing = density > 0.15 ? Math.max(0.4, 0.15 / density) : 1;
+  hits.stuffed = stuffing < 1;
+  ["logica", "evidencia", "refutacio", "claredat"].forEach(k => sc[k] *= stuffing);
   const cap = words < 10 ? 25 : words < 25 ? 55 : 100;
   Object.keys(sc).forEach(k => sc[k] = Math.max(5, Math.min(cap, Math.round(sc[k]))));
   const global = Math.round(CRIT_IDS.reduce((a, c) => a + c.w * sc[c.id], 0));
@@ -77,6 +84,7 @@ function analyseArgument(text, claim) {
 function liveCoach(text, claim) {
   const a = analyseArgument(text, claim), c = t("coach");
   if (a.words < 5) return c[0];
+  if (a.hits.stuffed) return t("coach_stuff");
   if (!a.hits.stance) return c[1];
   if (!a.hits.logic) return c[2];
   if (!a.hits.evidence && !a.hits.number) return c[3];

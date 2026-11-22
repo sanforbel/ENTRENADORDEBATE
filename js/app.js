@@ -42,7 +42,7 @@ function setLang(id) {
 function renderChrome() {
   document.querySelector(".skip").textContent = t("skip");
   document.getElementById("brandText").innerHTML = t("brand");
-  document.getElementById("nav").innerHTML = NAV.map(([h, ic, k]) => `<a href="#${h}"><span aria-hidden="true">${ic}</span><em>${esc(t(k))}</em></a>`).join("");
+  document.getElementById("nav").innerHTML = NAV.map(([h, ic, k]) => `<a href="#${h}"><span aria-hidden="true">${ic}</span><em>${h === "info" ? `<i class="nav-long">${esc(t(k))}</i><i class="nav-short" aria-hidden="true">${esc(t("nav_info_s"))}</i>` : esc(t(k))}</em></a>`).join("");
   document.getElementById("sideStats").innerHTML = `
     <span title="${esc(t("side_att_t"))}"><small>${esc(t("side_att"))}</small><b id="sideStreak"></b></span>
     <span title="${esc(t("side_pts_t"))}"><small>${esc(t("side_pts"))}</small><b id="sideXP"></b></span>`;

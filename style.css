@@ -63,6 +63,8 @@ code { background: var(--paper-2); padding: .1em .35em; border-radius: 4px; }
 .nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; text-decoration: none; color: #BFC5D2; border-left: 3px solid transparent; }
 .nav a span { width: 1.3rem; text-align: center; font-size: 1.05rem; }
 .nav a em { font-style: normal; }
+.nav a em i { font-style: normal; }
+.nav .nav-short { display: none; }
 .nav a:hover { color: #fff; background: rgba(255,255,255,.06); }
 .nav a.on { color: #fff; border-left-color: #E8B04B; background: rgba(255,255,255,.08); font-weight: 700; }
 .side-foot { margin-top: auto; display: grid; gap: 12px; }
@@ -360,6 +362,8 @@ details.doc[open] summary { margin-bottom: 8px; }
   .nav { flex-direction: row; width: 100%; justify-content: space-around; gap: 0; }
   .nav a { flex-direction: column; gap: 1px; padding: 6px 1px; font-size: .62rem; text-align: center; line-height: 1.15; flex: 1; border-left: 0; border-top: 3px solid transparent; }
   .nav a.on { border-top-color: #E8B04B; }
+  .nav .nav-long { display: none; }
+  .nav .nav-short { display: inline; }
   main { padding: 20px 16px 96px; }
   .home-grid, .home-grid.two { grid-template-columns: 1fr; }
   .vs { grid-template-columns: 1fr; }

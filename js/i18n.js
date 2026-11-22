@@ -53,7 +53,7 @@ UI.va = {
   flag_task: "Tasca", btn_repeat: "Repeteix", btn_start: "Comença", cal_foot: "Les jornades noves s'afigen editant <code>js/content.js</code>.",
   // Docent
   tch_title: "Panell docent", tch_sub: "L'app no té servidor ni comptes: les tasques viatgen en un enllaç i el progrés, en fitxers que l'alumnat us lliura.",
-  tch_task: "Tasca de classe", tch_task_help: "Si no assigneu cap tasca, cada alumne segueix el calendari en ordre. La jornada assignada queda oberta encara que no hagen fet les anteriors.",
+  tch_task: "Tasca de classe", tch_task_help: "Si no assigneu cap tasca, cada alumne seguix el calendari en ordre. La jornada assignada queda oberta encara que no hagen fet les anteriors.",
   tch_group: "Grup", tch_group_ph: "Ex.: 3r ESO B", tch_jornada: "Jornada", tch_days: "Dies de sessió",
   tch_link: "Genera l'enllaç per a l'alumnat", tch_here: "Aplica-la en este dispositiu", tch_clear: "Lleva la tasca d'este dispositiu",
   tch_link_label: "Enllaç de la tasca", tch_copy: "Copia", tch_link_help: "Compartiu-lo per Aules, Classroom o un codi QR. En obrir-lo, la tasca apareixerà a l'Inici de cada alumne.",
@@ -84,12 +84,13 @@ UI.va = {
       <tr><td><b>Claredat i estructura</b></td><td>Posició explícita al principi, llargària de les frases i conclusió.</td></tr>
       <tr><td><b>Pertinència</b></td><td>Relació amb les paraules i la idea de la moció.</td></tr>
     </tbody></table>
+    <p>Si el text amuntega connectors i paraules clau sense desenvolupar-los, el corrector ho detecta i rebaixa la puntuació.</p>
     <p>Com que mira la forma i no entén del tot el sentit, <b>pot equivocar-se</b>. La puntuació és orientativa: contrasteu-la amb el jurat d'aula, amb el professorat o amb el prompt per a IA.</p>`,
   // Jornada
   tl_chat: "Transcripció", tl_choice: "Pregunta", tl_vs: "Cara a cara", tl_multi: "Selecció", tl_tap: "Subratllat", tl_cards: "Classificació", tl_build: "Esquema",
   review_title: "Sessió de revisió", review_unit: "Revisió", repeat_unit: "Repetició", no_review: "No tens cap exercici pendent de revisió.",
   ls_close: "✕ Tanca", ls_speak: "Llig en veu alta", ls_progress: "Progrés de la jornada", ls_close_confirm: "Vols tancar la sessió? No es guardarà el progrés d'esta jornada.",
-  voice_on: "Lectura en veu alta activada (es pot desactivar al Perfil).", ex_count: "Exercici {a} de {b}", acta: "Acta",
+  voice_on: "Lectura en veu alta activada (es pot desactivar al Perfil).", ex_count: "Pas {a} de {b}", coach_stuff: "Nota al marge: hi ha molts connectors i paraules clau en poc text. Desenvolupa cada idea: explica, posa un exemple i tanca.", nav_info_s: "Ajuda", acta: "Acta",
   check: "Comprova", flag_review: "Revisió", v_ok: "Correcte", v_ko: "Revisa-ho", v_resolved: "Resolt",
   ko_help: "Pots demanar una pista o la resolució.", ko_reread: "Torna a llegir-ho amb calma.", hint: "Pista", solution: "Resolució", to_review: "Passa a la llista de revisió.",
   retry: "Torna-ho a intentar", justif: "Justificació", cont: "Continua", plus_pts: "+{n} pts",
@@ -253,11 +254,12 @@ UI.es = {
       <tr><td><b>Claridad y estructura</b></td><td>Posición explícita al principio, longitud de las frases y conclusión.</td></tr>
       <tr><td><b>Pertinencia</b></td><td>Relación con las palabras y la idea de la moción.</td></tr>
     </tbody></table>
+    <p>Si el texto amontona conectores y palabras clave sin desarrollarlos, el corrector lo detecta y rebaja la puntuación.</p>
     <p>Como se fija en la forma y no entiende del todo el sentido, <b>puede equivocarse</b>. La puntuación es orientativa: contrastadla con el jurado de aula, con el profesorado o con el prompt para IA.</p>`,
   tl_chat: "Transcripción", tl_choice: "Pregunta", tl_vs: "Cara a cara", tl_multi: "Selección", tl_tap: "Subrayado", tl_cards: "Clasificación", tl_build: "Esquema",
   review_title: "Sesión de revisión", review_unit: "Revisión", repeat_unit: "Repetición", no_review: "No tienes ningún ejercicio pendiente de revisión.",
   ls_close: "✕ Cerrar", ls_speak: "Leer en voz alta", ls_progress: "Progreso de la jornada", ls_close_confirm: "¿Quieres cerrar la sesión? No se guardará el progreso de esta jornada.",
-  voice_on: "Lectura en voz alta activada (se puede desactivar en el Perfil).", ex_count: "Ejercicio {a} de {b}", acta: "Acta",
+  voice_on: "Lectura en voz alta activada (se puede desactivar en el Perfil).", ex_count: "Paso {a} de {b}", coach_stuff: "Nota al margen: hay muchos conectores y palabras clave en poco texto. Desarrolla cada idea: explica, pon un ejemplo y cierra.", nav_info_s: "Ayuda", acta: "Acta",
   check: "Comprobar", flag_review: "Revisión", v_ok: "Correcto", v_ko: "Revísalo", v_resolved: "Resuelto",
   ko_help: "Puedes pedir una pista o la resolución.", ko_reread: "Vuelve a leerlo con calma.", hint: "Pista", solution: "Resolución", to_review: "Pasa a la lista de revisión.",
   retry: "Volver a intentarlo", justif: "Justificación", cont: "Continuar", plus_pts: "+{n} pts",
@@ -418,11 +420,12 @@ UI.en = {
       <tr><td><b>Clarity and structure</b></td><td>A clear position at the start, sentence length and a conclusion.</td></tr>
       <tr><td><b>Relevance</b></td><td>Connection with the words and the idea of the motion.</td></tr>
     </tbody></table>
+    <p>If the text piles up connectives and keywords without developing them, the marker detects it and lowers the score.</p>
     <p>Because it looks at form and doesn't fully understand meaning, <b>it can get things wrong</b>. The score is a guide: compare it with the class jury, your teacher or the AI prompt.</p>`,
   tl_chat: "Transcript", tl_choice: "Question", tl_vs: "Head to head", tl_multi: "Selection", tl_tap: "Highlight", tl_cards: "Sorting", tl_build: "Outline",
   review_title: "Review session", review_unit: "Review", repeat_unit: "Retry", no_review: "You have no exercises waiting for review.",
   ls_close: "✕ Close", ls_speak: "Read aloud", ls_progress: "Session progress", ls_close_confirm: "Close the session? Progress in this session won't be saved.",
-  voice_on: "Read-aloud turned on (you can turn it off in your Profile).", ex_count: "Exercise {a} of {b}", acta: "Report",
+  voice_on: "Read-aloud turned on (you can turn it off in your Profile).", ex_count: "Step {a} of {b}", coach_stuff: "Margin note: lots of connectives and keywords in very little text. Develop each idea: explain it, give an example and wrap up.", nav_info_s: "Help", acta: "Report",
   check: "Check", flag_review: "Review", v_ok: "Correct", v_ko: "Check again", v_resolved: "Solved",
   ko_help: "You can ask for a hint or the solution.", ko_reread: "Read it again carefully.", hint: "Hint", solution: "Solution", to_review: "Added to your review list.",
   retry: "Try again", justif: "Explanation", cont: "Continue", plus_pts: "+{n} pts",
@@ -583,11 +586,12 @@ UI.fr = {
       <tr><td><b>Clarté et structure</b></td><td>Position explicite au début, longueur des phrases et conclusion.</td></tr>
       <tr><td><b>Pertinence</b></td><td>Lien avec les mots et l'idée de la motion.</td></tr>
     </tbody></table>
+    <p>Si le texte accumule des connecteurs et des mots-clés sans les développer, le correcteur le détecte et baisse la note.</p>
     <p>Comme il regarde la forme sans tout comprendre du sens, <b>il peut se tromper</b>. La note est indicative : comparez-la avec le jury de classe, avec l'enseignant ou avec le prompt pour IA.</p>`,
   tl_chat: "Transcription", tl_choice: "Question", tl_vs: "Face-à-face", tl_multi: "Sélection", tl_tap: "Surlignage", tl_cards: "Classement", tl_build: "Schéma",
   review_title: "Séance de révision", review_unit: "Révision", repeat_unit: "Reprise", no_review: "Vous n'avez aucun exercice à réviser.",
   ls_close: "✕ Fermer", ls_speak: "Lire à voix haute", ls_progress: "Progression de la journée", ls_close_confirm: "Fermer la séance ? La progression de cette journée ne sera pas enregistrée.",
-  voice_on: "Lecture à voix haute activée (désactivable dans le Profil).", ex_count: "Exercice {a} sur {b}", acta: "Procès-verbal",
+  voice_on: "Lecture à voix haute activée (désactivable dans le Profil).", ex_count: "Étape {a} sur {b}", coach_stuff: "Note en marge : beaucoup de connecteurs et de mots-clés dans peu de texte. Développez chaque idée : expliquez, donnez un exemple et concluez.", nav_info_s: "Aide", acta: "Procès-verbal",
   check: "Vérifier", flag_review: "Révision", v_ok: "Correct", v_ko: "À revoir", v_resolved: "Résolu",
   ko_help: "Vous pouvez demander un indice ou la solution.", ko_reread: "Relisez calmement.", hint: "Indice", solution: "Solution", to_review: "Ajouté à la liste de révision.",
   retry: "Réessayer", justif: "Justification", cont: "Continuer", plus_pts: "+{n} pts",
